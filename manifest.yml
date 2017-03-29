@@ -1,0 +1,9 @@
+applications:
+- path: build/libs/reversegame-1.0-SNAPSHOT.jar
+  random-route: true
+  memory: 512M
+  instances: 1
+  domain: mybluemix.net
+  name: IAmAma
+  host: IAmAma
+  disk_quota: 1024M

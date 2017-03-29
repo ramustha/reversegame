@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/reversegame.iml" filepath="$PROJECT_DIR$/.idea/modules/reversegame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/reversegame_main.iml" filepath="$PROJECT_DIR$/.idea/modules/reversegame_main.iml" group="reversegame" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/reversegame_test.iml" filepath="$PROJECT_DIR$/.idea/modules/reversegame_test.iml" group="reversegame" />
+    </modules>
+  </component>
+</project>
