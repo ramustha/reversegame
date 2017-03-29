@@ -122,16 +122,16 @@ public class LineBotController {
   }
 
   private void sourceUserProccess(String aEventType, String aReplayToken, long aTimestamp, Message aMessage, Postback aPostback, String aUserId) {
-    try {
-      LOG.info("Start find UserProfileResponse on database...");
-      UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
-      UserLine mUserLine = fDao.getUserLineById(profile.getUserId());
-      if (mUserLine == null) {
-        LOG.info("Start save user line to database...");
-        fDao.setUserLine(profile);
-      }
-      LOG.info("End find UserProfileResponse on database..." + mUserLine);
-    } catch (IOException ignored) {}
+    // try {
+    //   LOG.info("Start find UserProfileResponse on database...");
+    //   UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
+    //   UserLine mUserLine = fDao.getUserLineById(profile.getUserId());
+    //   if (mUserLine == null) {
+    //     LOG.info("Start save user line to database...");
+    //     fDao.setUserLine(profile);
+    //   }
+    //   LOG.info("End find UserProfileResponse on database..." + mUserLine);
+    // } catch (IOException ignored) {}
 
     try {
       switch (aEventType) {
