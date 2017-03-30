@@ -90,10 +90,9 @@ public class ScheduledTasks {
             }
             LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
             pushMessage(fChannelAccessToken, userId, quest);
-
             fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
-            if (!isAnswer) {
+            if (!isAnswer && wordCount != 0) {
               LOG.info("User not answering....");
               fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), false));
             }
