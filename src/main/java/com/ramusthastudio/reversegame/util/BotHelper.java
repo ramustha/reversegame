@@ -49,7 +49,7 @@ public final class BotHelper {
 
   public static final String KEY_START_GAME = "start";
   public static final String KEY_STOP_GAME = "stop";
-  public static final String KEY_LEADERBOARD = "leaderboard";
+  public static final String KEY_LEADERBOARD = "peringkat";
   public static final String KEY_HELP = "help";
 
   public static UserProfileResponse getUserProfile(String aChannelAccessToken,

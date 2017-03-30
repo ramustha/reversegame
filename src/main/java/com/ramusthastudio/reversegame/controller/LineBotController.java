@@ -204,6 +204,7 @@ public class LineBotController {
         case MESSAGE:
           String type = aMessage.type();
           String text = aMessage.text();
+          int invalidChat = userChatDb.getFalseCount();
           if (type.equals(MESSAGE_TEXT)) {
             if (text.contains(KEY_STOP_GAME)) {
               if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
@@ -242,7 +243,6 @@ public class LineBotController {
                 fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
               } else {
                 String def;
-                int invalidChat = userChatDb.getFalseCount();
                 if (invalidChat == 0) {
                   def = "Game nya belum dimulai kamu udah tulis aja nih";
                   invalidChat++;
@@ -268,10 +268,13 @@ public class LineBotController {
               }
             }
 
-          }
 
-          LOG.info("Start UserChat history...");
-          fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp, userChatDb.getFalseCount()));
+            LOG.info("Start UserChat history...");
+            fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp, invalidChat));
+          }else {
+            pushMessage(fChannelAccessToken, aUserId, "Kamu kirim apa itu ? aku gak ngerti");
+            confirmHelpGame(fChannelAccessToken, aUserId);
+          }
           break;
         case POSTBACK:
           String pd = aPostback.data();
@@ -283,7 +286,7 @@ public class LineBotController {
 
             replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
           } else if (pd.contains(KEY_LEADERBOARD)) {
-            StringBuilder builder1 = new StringBuilder("Peringkat...\n\n");
+            StringBuilder builder1 = new StringBuilder("Peringkat...\n");
             for (GameLeaderboard gameLeaderboard : fDao.getAllGameLeaderboard()) {
               builder1
                   .append("\n").append("User: ").append(gameLeaderboard.getUsername())
