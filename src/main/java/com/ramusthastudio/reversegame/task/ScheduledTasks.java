@@ -2,7 +2,6 @@ package com.ramusthastudio.reversegame.task;
 
 import com.ramusthastudio.reversegame.database.Dao;
 import com.ramusthastudio.reversegame.model.GameStatus;
-import com.ramusthastudio.reversegame.model.GameWord;
 import com.ramusthastudio.reversegame.model.UserChat;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -19,8 +18,6 @@ import org.springframework.stereotype.Component;
 
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_START_GAME;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
-import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomSmall;
-import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 
 @Component
@@ -39,33 +36,34 @@ public class ScheduledTasks {
   @Autowired
   Dao mDao;
 
-  @Scheduled(fixedRate = 10000)
+  @Scheduled(fixedRate = 5000)
   public void StartingGame() throws IOException {
     List<GameStatus> gameStatuses = mDao.getAllGameStatus();
-    if (gameStatuses != null && gameStatuses.size() > 0) {
+    if (gameStatuses != null) {
       for (GameStatus gameStatus : gameStatuses) {
         if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-          List<GameWord> gameWords = mDao.getAllGameWord();
-          if (gameWords != null && gameWords.size() > 0) {
-            for (GameWord gameWord : gameWords) {
-              String id = gameWord.getId();
-              if (id.equalsIgnoreCase(gameStatus.getId())) {
-                String answer = getRandomSmall();
-                String quest = new StringBuffer(answer).reverse().toString();
-                LOG.info("StartingGame.... Quest : {} Answer : {} time {} ", quest, answer, new Timestamp(currentTimeMillis()));
-
-                // int wordCount = gameWord.getWordCount();
-                // int gameLevel = gameWord.getGameLevel();
-                // if (wordCount == 10) {
-                //   gameLevel++;
-                //   wordCount = 0;
-                // }
-                // pushMessage(fChannelAccessToken, id, quest);
-                // mDao.setGameWord(
-                //     new GameWord(id, quest, answer, ++wordCount, gameLevel, currentTimeMillis(), 0));
-              }
-            }
-          }
+          LOG.info("StartingGame...." + gameStatus.getStatus());
+          // List<GameWord> gameWords = mDao.getAllGameWord();
+          // if (gameWords != null && gameWords.size() > 0) {
+          //   for (GameWord gameWord : gameWords) {
+          //     String id = gameWord.getId();
+          //     if (id.equalsIgnoreCase(gameStatus.getId())) {
+          //       String answer = getRandomSmall();
+          //       String quest = new StringBuffer(answer).reverse().toString();
+          //       LOG.info("StartingGame.... Quest : {} Answer : {} time {} ", quest, answer, new Timestamp(currentTimeMillis()));
+          //
+          //       // int wordCount = gameWord.getWordCount();
+          //       // int gameLevel = gameWord.getGameLevel();
+          //       // if (wordCount == 10) {
+          //       //   gameLevel++;
+          //       //   wordCount = 0;
+          //       // }
+          //       // pushMessage(fChannelAccessToken, id, quest);
+          //       // mDao.setGameWord(
+          //       //     new GameWord(id, quest, answer, ++wordCount, gameLevel, currentTimeMillis(), 0));
+          //     }
+          //   }
+          // }
         }
       }
     }
