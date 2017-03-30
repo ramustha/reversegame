@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.ramusthastudio.reversegame.task.ScheduledTasks.setUserReplay;
 import static com.ramusthastudio.reversegame.util.BotHelper.FOLLOW;
 import static com.ramusthastudio.reversegame.util.BotHelper.JOIN;
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_HELP;
@@ -74,12 +75,6 @@ public class LineBotController {
     LOG.info("The Signature is: {} ", (aXLineSignature != null && aXLineSignature.length() > 0) ? aXLineSignature : "N/A");
     final boolean valid = new LineSignatureValidator(fChannelSecret.getBytes()).validateSignature(aPayload.getBytes(), aXLineSignature);
     LOG.info("The Signature is: {} ", valid ? "valid" : "tidak valid");
-
-    if (fGameThread == null) {
-      fGameThread = new Thread(new GameTask());
-      fGameThread.setDaemon(true);
-    }
-    if (!fGameThread.isAlive()) { fGameThread.start(); }
 
     if (aPayload != null && aPayload.length() > 0) {
       Gson gson = new Gson();
@@ -163,18 +158,15 @@ public class LineBotController {
           String type = aMessage.type();
           String text = aMessage.text();
           if (type.equals(MESSAGE_TEXT)) {
+            setUserReplay(aUserId, aTimestamp);
             replayMessage(fChannelAccessToken, aReplayToken, text);
           } else if (type.contains(KEY_STOP_GAME)) {
-            if (profile != null) {
-              String id = profile.getUserId();
-              GameStatus gameStatus = new GameStatus(id, KEY_STOP_GAME, aTimestamp);
-
-              GameStatus status = fDao.getGameStatusById(id);
-              if (status == null && status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-                fDao.setGameStatus(gameStatus);
-              } else {
-                fDao.updateGameStatus(gameStatus);
-              }
+            GameStatus gameStatus = new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp);
+            GameStatus status = fDao.getGameStatusById(aUserId);
+            if (status != null && status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+              fDao.updateGameStatus(gameStatus);
+            } else {
+              fDao.setGameStatus(gameStatus);
             }
             replayMessage(fChannelAccessToken, aReplayToken, text);
           }
@@ -192,17 +184,12 @@ public class LineBotController {
         case POSTBACK:
           String pd = aPostback.data();
           if (pd.contains(KEY_START_GAME)) {
-
-            if (profile != null) {
-              String id = profile.getUserId();
-              GameStatus gameStatus = new GameStatus(id, KEY_START_GAME, aTimestamp);
-
-              GameStatus status = fDao.getGameStatusById(id);
-              if (status == null) {
-                fDao.setGameStatus(gameStatus);
-              } else {
-                fDao.updateGameStatus(gameStatus);
-              }
+            GameStatus gameStatus = new GameStatus(aUserId, KEY_START_GAME, aTimestamp);
+            GameStatus status = fDao.getGameStatusById(aUserId);
+            if (status != null && status.getStatus().equalsIgnoreCase(KEY_STOP_GAME)) {
+              fDao.updateGameStatus(gameStatus);
+            } else {
+              fDao.setGameStatus(gameStatus);
             }
             replayMessage(fChannelAccessToken, aReplayToken, "Game mulai 3 detik dari sekarang");
           } else if (pd.contains(KEY_LEADERBOARD)) {
@@ -214,11 +201,5 @@ public class LineBotController {
       }
 
     } catch (IOException aE) { LOG.error("Message {}", aE.getMessage()); }
-  }
-
-  static class GameTask implements Runnable {
-    @Override public void run() {
-      LOG.info("Running...");
-    }
   }
 }

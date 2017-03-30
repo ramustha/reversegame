@@ -37,31 +37,39 @@ public class ScheduledTasks {
   @Autowired
   Dao mDao;
 
-  // @Scheduled(fixedRate = 5000)
-  // public void StartingGame() {
-  //   List<GameStatus> gameStatuses = mDao.getAllGameStatus();
-  //   if (gameStatuses != null && gameStatuses.size() > 0) {
-  //     for (GameStatus gameStatus : gameStatuses) {
-  //       if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-  //         String answer = getRandomSmall();
-  //         String quest = new StringBuffer(answer).reverse().toString();
-  //         LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
-  //
-  //         List<GameWord> gameWords = mDao.getAllGameWord();
-  //
-  //         if (gameWords != null && gameWords.size() > 0) {
-  //
-  //         }
-  //         mDao.setGameWord(
-  //             new GameWord(
-  //                 quest,
-  //                 answer,
-  //
-  //             ));
-  //       }
-  //     }
-  //   }
-  // }
+  private static String fId;
+  private static long fReplayTime;
+
+  public static void setUserReplay(String aId, long aReplayTime){
+    fId = aId;
+    fReplayTime = aReplayTime;
+  }
+
+  @Scheduled(fixedRate = 1000)
+  public void StartingGame() {
+    List<GameStatus> gameStatuses = mDao.getAllGameStatus();
+    if (gameStatuses != null && gameStatuses.size() > 0) {
+      for (GameStatus gameStatus : gameStatuses) {
+        if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+          String answer = getRandomSmall();
+          String quest = new StringBuffer(answer).reverse().toString();
+          LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
+          LOG.info("User Id : {} Replay time : {}", fId, fReplayTime);
+
+          // List<GameWord> gameWords = mDao.getAllGameWord();
+          // if (gameWords != null && gameWords.size() > 0) {
+          //
+          // }
+          // mDao.setGameWord(
+          //     new GameWord(
+          //         quest,
+          //         answer,
+          //
+          //     ));
+        }
+      }
+    }
+  }
 
   @Scheduled(fixedRate = 5000)
   public void reportCurrentTime() {
