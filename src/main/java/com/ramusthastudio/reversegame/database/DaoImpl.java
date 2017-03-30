@@ -191,7 +191,8 @@ public class DaoImpl implements Dao {
         aGameStatus.getStatus(),
         aGameStatus.getWordTrue(),
         aGameStatus.getWordFalse(),
-        new Timestamp(aGameStatus.getLastTime())
+        new Timestamp(aGameStatus.getLastTime()),
+        aGameStatus.isAnswer()
     );
   }
   @Override public void setGameWord(GameWord aGameWord) {
@@ -229,6 +230,7 @@ public class DaoImpl implements Dao {
         aGameStatus.getWordTrue(),
         aGameStatus.getWordFalse(),
         new Timestamp(aGameStatus.getLastTime()),
+        aGameStatus.isAnswer(),
         aGameStatus.getId()
     );
   }
