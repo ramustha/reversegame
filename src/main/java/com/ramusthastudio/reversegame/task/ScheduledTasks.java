@@ -96,10 +96,13 @@ public class ScheduledTasks {
             LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
             pushMessage(fChannelAccessToken, userId, quest);
             fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
-            fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), isAnswer));
-          }
 
-          fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, currentTimeMillis(), false));
+            if (isAnswer) {
+              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, currentTimeMillis(), false));
+            }else {
+              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), false));
+            }
+          }
         }
       }
     }
