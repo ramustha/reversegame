@@ -38,7 +38,6 @@ import static com.ramusthastudio.reversegame.util.BotHelper.getUserProfile;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessageGroup;
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
-import static com.ramusthastudio.reversegame.util.BotHelper.instructionSentimentMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
 
@@ -108,7 +107,6 @@ public class LineBotController {
         case JOIN:
           LOG.info("Greeting Message join group");
           greetingMessageGroup(fChannelAccessToken, aSource.groupId());
-          instructionSentimentMessage(fChannelAccessToken, aSource.groupId());
           break;
         case MESSAGE:
           if (aMessage.type().equals(MESSAGE_TEXT)) {
