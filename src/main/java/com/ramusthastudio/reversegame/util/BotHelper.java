@@ -47,6 +47,7 @@ public final class BotHelper {
   public static final String MESSAGE_STICKER = "sticker";
 
   public static final String KEY_START_GAME = "start";
+  public static final String KEY_STOP_GAME = "start";
   public static final String KEY_LEADERBOARD = "leaderboard";
   public static final String KEY_HELP = "help";
 

@@ -5,10 +5,12 @@ import com.linecorp.bot.client.LineSignatureValidator;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.ramusthastudio.reversegame.database.Dao;
 import com.ramusthastudio.reversegame.model.Events;
+import com.ramusthastudio.reversegame.model.GameStatus;
 import com.ramusthastudio.reversegame.model.Message;
 import com.ramusthastudio.reversegame.model.Payload;
 import com.ramusthastudio.reversegame.model.Postback;
 import com.ramusthastudio.reversegame.model.Source;
+import com.ramusthastudio.reversegame.model.UserChat;
 import com.ramusthastudio.reversegame.model.UserLine;
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -25,6 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.ramusthastudio.reversegame.util.BotHelper.FOLLOW;
 import static com.ramusthastudio.reversegame.util.BotHelper.JOIN;
+import static com.ramusthastudio.reversegame.util.BotHelper.KEY_HELP;
+import static com.ramusthastudio.reversegame.util.BotHelper.KEY_LEADERBOARD;
+import static com.ramusthastudio.reversegame.util.BotHelper.KEY_START_GAME;
+import static com.ramusthastudio.reversegame.util.BotHelper.KEY_STOP_GAME;
 import static com.ramusthastudio.reversegame.util.BotHelper.LEAVE;
 import static com.ramusthastudio.reversegame.util.BotHelper.MESSAGE;
 import static com.ramusthastudio.reversegame.util.BotHelper.MESSAGE_TEXT;
@@ -122,16 +128,19 @@ public class LineBotController {
   }
 
   private void sourceUserProccess(String aEventType, String aReplayToken, long aTimestamp, Message aMessage, Postback aPostback, String aUserId) {
+    UserProfileResponse profile = null;
     try {
-      LOG.info("Start find UserProfileResponse on database...");
-      UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
+      LOG.info("Start find UserLine on database...");
+      profile = getUserProfile(fChannelAccessToken, aUserId);
       UserLine mUserLine = fDao.getUserLineById(profile.getUserId());
       if (mUserLine == null) {
-        LOG.info("Start save user line to database...");
+        LOG.info("Start save UserLine to database...");
         fDao.setUserLine(profile);
       }
-      LOG.info("End find UserProfileResponse on database..." + mUserLine);
+      LOG.info("End find UserLine on database..." + mUserLine);
     } catch (IOException ignored) {}
+
+    boolean isValidMessage = false;
 
     try {
       switch (aEventType) {
@@ -143,18 +152,66 @@ public class LineBotController {
           greetingMessage(fChannelAccessToken, aUserId);
           instructionMessage(fChannelAccessToken, aUserId);
           confirmStartGame(fChannelAccessToken, aUserId);
+          isValidMessage = true;
           break;
         case MESSAGE:
-          if (aMessage.type().equals(MESSAGE_TEXT)) {
-            String text = aMessage.text();
+          String type = aMessage.type();
+          String text = aMessage.text();
+          if (type.equals(MESSAGE_TEXT)) {
+            replayMessage(fChannelAccessToken, aReplayToken, text);
+          } else if (type.contains(KEY_STOP_GAME)) {
+            if (profile != null) {
+              String id = profile.getUserId();
+              GameStatus gameStatus = new GameStatus(id, KEY_STOP_GAME, aTimestamp);
+
+              GameStatus status = fDao.getGameStatusById(id);
+              if (status == null && status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                fDao.setGameStatus(gameStatus);
+              } else {
+                fDao.updateGameStatus(gameStatus);
+              }
+            }
             replayMessage(fChannelAccessToken, aReplayToken, text);
           }
+          isValidMessage = true;
           break;
         case POSTBACK:
           String pd = aPostback.data();
+          if (pd.contains(KEY_START_GAME)) {
 
+            if (profile != null) {
+              String id = profile.getUserId();
+              GameStatus gameStatus = new GameStatus(id, KEY_START_GAME, aTimestamp);
+
+              GameStatus status = fDao.getGameStatusById(id);
+              if (status == null) {
+                fDao.setGameStatus(gameStatus);
+              } else {
+                fDao.updateGameStatus(gameStatus);
+              }
+            }
+            replayMessage(fChannelAccessToken, aReplayToken, "Game mulai 3 detik dari sekarang");
+          } else if (pd.contains(KEY_LEADERBOARD)) {
+            replayMessage(fChannelAccessToken, aReplayToken, pd);
+          } else if (pd.contains(KEY_HELP)) {
+            instructionMessage(fChannelAccessToken, aUserId);
+          }
+          isValidMessage = true;
           break;
       }
+
+      if (isValidMessage) {
+        LOG.info("isValidMessage...");
+        UserChat userChat = fDao.getUserChatById(aUserId);
+        if (userChat != null) {
+          LOG.info("Start UserChat history...");
+          fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+        } else {
+          LOG.info("Start saving UserChat history...");
+          fDao.setUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+        }
+      }
+
     } catch (IOException aE) { LOG.error("Message {}", aE.getMessage()); }
   }
 }
