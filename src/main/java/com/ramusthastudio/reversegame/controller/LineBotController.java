@@ -199,12 +199,13 @@ public class LineBotController {
                 int correct = gameStatusDb.getWordTrue();
                 int incorrect = gameStatusDb.getWordFalse();
                 if (answer.equalsIgnoreCase(userAnswer)) {
+                  correct++;
                   LOG.info("Correct answer..." + answer);
-                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, ++correct, incorrect, aTimestamp, true));
                 } else {
+                  incorrect++;
                   LOG.info("Incorrect answer..." + answer);
-                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, ++incorrect, aTimestamp, true));
                 }
+                fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, ++incorrect, aTimestamp, true));
               }
             }
 

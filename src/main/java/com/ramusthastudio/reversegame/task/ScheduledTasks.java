@@ -60,7 +60,7 @@ public class ScheduledTasks {
           int wordFalse = gameStatus.getWordFalse();
           boolean isAnswer = gameStatus.isAnswer();
 
-          if (wordFalse == 3) {
+          if (wordFalse > 2) {
             pushMessage(fChannelAccessToken, userId, "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
             stickerMessage(fChannelAccessToken, userId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
             confirmStartGame(fChannelAccessToken, userId);
@@ -97,11 +97,8 @@ public class ScheduledTasks {
             pushMessage(fChannelAccessToken, userId, quest);
             fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
-            if (isAnswer) {
-              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, currentTimeMillis(), false));
-            }else {
-              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), false));
-            }
+            if (!isAnswer && wordCount > 0) { wordFalse++; }
+            fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, currentTimeMillis(), false));
           }
         }
       }

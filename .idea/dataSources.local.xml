@@ -8,7 +8,7 @@
       <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
       <secret-storage>memory</secret-storage>
       <user-name>liryawhbwjrfwn</user-name>
-      <resolve-scope>d31j509fh26kte:public,liryawhbwjrfwn</resolve-scope>
+      <resolve-scope>d31j509fh26kte:liryawhbwjrfwn,public</resolve-scope>
     </data-source>
   </component>
 </project>
