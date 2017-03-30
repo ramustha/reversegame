@@ -46,6 +46,8 @@ public class ScheduledTasks {
   @Autowired
   Dao fDao;
 
+  int maxLevel = 7;
+
   @Scheduled(fixedRate = 8000)
   public void StartingGame() throws IOException {
     List<GameStatus> gameStatuses = fDao.getAllGameStatus();
@@ -69,7 +71,7 @@ public class ScheduledTasks {
             GameWord gameWord = fDao.getGameWordById(userId);
             int wordCount = gameWord.getWordCount();
             int gameLevel = gameWord.getGameLevel();
-            if (wordCount == 10) {
+            if (wordCount == maxLevel) {
               gameLevel++;
               wordCount = 0;
             } else {
@@ -84,18 +86,21 @@ public class ScheduledTasks {
             } else if (gameLevel == 2) {
               answer = getRandomMedium();
               quest = new StringBuffer(answer).reverse().toString();
+              maxLevel = 20;
             } else if (gameLevel == 3) {
               answer = getRandomLarge();
               quest = new StringBuffer(answer).reverse().toString();
+              maxLevel = 50;
             }
-            LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
-            pushMessage(fChannelAccessToken, userId, quest);
-            fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
             if (!isAnswer && wordCount > 0) {
               LOG.info("User not answering....");
               fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), false));
             }
+
+            LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
+            pushMessage(fChannelAccessToken, userId, quest);
+            fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
           }
         }
       }
