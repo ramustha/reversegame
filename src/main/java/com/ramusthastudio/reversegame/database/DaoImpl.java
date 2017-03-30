@@ -30,8 +30,8 @@ public class DaoImpl implements Dao {
 
   private final static String SQL_SELECT_ALL_GAME_STATUS = "SELECT * FROM game_status";
   private final static String SQL_GAME_STATUS_GET_BY_ID = SQL_SELECT_ALL_GAME_STATUS + " WHERE LOWER(id) LIKE LOWER(?) ;";
-  private final static String SQL_INSERT_GAME_STATUS = "INSERT INTO game_status (id, status, word_true, word_false, last_time) VALUES (?, ?, ?, ?, ?);";
-  private final static String SQL_UPDATE_GAME_STATUS = "UPDATE game_status SET status=?, word_true=?, word_false=?, last_time=? WHERE LOWER(id) LIKE LOWER(?);";
+  private final static String SQL_INSERT_GAME_STATUS = "INSERT INTO game_status (id, status, word_true, word_false, last_time, is_answer) VALUES (?, ?, ?, ?, ?, ?);";
+  private final static String SQL_UPDATE_GAME_STATUS = "UPDATE game_status SET status=?, word_true=?, word_false=?, last_time=?, is_answer=? WHERE LOWER(id) LIKE LOWER(?);";
 
   private final static String SQL_SELECT_ALL_GAME_WORD = "SELECT * FROM game_word";
   private final static String SQL_GAME_WORD_GET_BY_ID = SQL_SELECT_ALL_GAME_WORD + " WHERE LOWER(id) LIKE LOWER(?) ;";
@@ -71,7 +71,8 @@ public class DaoImpl implements Dao {
           aRs.getString("status"),
           aRs.getInt("word_true"),
           aRs.getInt("word_false"),
-          aRs.getTimestamp("last_time").getTime()
+          aRs.getTimestamp("last_time").getTime(),
+          aRs.getBoolean("is_answer")
       );
 
   private final static RowMapper<GameWord> SINGLE_GAME_WORD = (aRs, rowNum) ->
@@ -128,8 +129,8 @@ public class DaoImpl implements Dao {
           aRs.getString("status"),
           aRs.getInt("word_true"),
           aRs.getInt("word_false"),
-          aRs.getTimestamp("last_time").getTime()
-
+          aRs.getTimestamp("last_time").getTime(),
+          aRs.getBoolean("is_answer")
       ));
     }
     return list;

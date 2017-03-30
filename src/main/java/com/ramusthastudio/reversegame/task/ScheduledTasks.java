@@ -23,7 +23,6 @@ import static com.ramusthastudio.reversegame.util.BotHelper.KEY_STOP_GAME;
 import static com.ramusthastudio.reversegame.util.BotHelper.confirmStartGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
-import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_TWO_THUMBS;
 import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_USELESS;
 import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomLarge;
 import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomMedium;
@@ -57,6 +56,7 @@ public class ScheduledTasks {
           String status = gameStatus.getStatus();
           int wordTrue = gameStatus.getWordTrue();
           int wordFalse = gameStatus.getWordFalse();
+          boolean isAnswer = gameStatus.isAnswer();
 
           if (wordFalse == 3) {
             pushMessage(fChannelAccessToken, userId, "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
@@ -93,8 +93,10 @@ public class ScheduledTasks {
 
             fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
-            LOG.info("User not answering....");
-            fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis()));
+            if (!isAnswer) {
+              LOG.info("User not answering....");
+              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), false));
+            }
           }
         }
       }

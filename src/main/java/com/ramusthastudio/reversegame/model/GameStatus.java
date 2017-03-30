@@ -6,6 +6,7 @@ public class GameStatus {
   private int wordTrue;
   private int wordFalse;
   private long lastTime;
+  private boolean isAnswer;
 
   public GameStatus(String aId, String aStatus) {
     id = aId;
@@ -18,12 +19,13 @@ public class GameStatus {
     lastTime = aLastTime;
   }
 
-  public GameStatus(String aId, String aStatus, int aWordTrue, int aWordFalse, long aLastTime) {
+  public GameStatus(String aId, String aStatus, int aWordTrue, int aWordFalse, long aLastTime, boolean aIsAnswer) {
     id = aId;
     status = aStatus;
     wordTrue = aWordTrue;
     wordFalse = aWordFalse;
     lastTime = aLastTime;
+    isAnswer = aIsAnswer;
   }
 
   public String getId() { return id; }
@@ -31,6 +33,7 @@ public class GameStatus {
   public int getWordTrue() { return wordTrue; }
   public int getWordFalse() { return wordFalse; }
   public long getLastTime() { return lastTime; }
+  public boolean isAnswer() { return isAnswer; }
 
   public GameStatus setId(String aId) {
     id = aId;
@@ -52,7 +55,10 @@ public class GameStatus {
     lastTime = aLastTime;
     return this;
   }
-
+  public GameStatus setAnswer(boolean aAnswer) {
+    isAnswer = aAnswer;
+    return this;
+  }
   @Override public String toString() {
     return "GameStatus{" +
         "id='" + id + '\'' +
@@ -60,6 +66,7 @@ public class GameStatus {
         ", wordTrue=" + wordTrue +
         ", wordFalse=" + wordFalse +
         ", lastTime=" + lastTime +
+        ", isAnswer=" + isAnswer +
         '}';
   }
 }
