@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_START_GAME;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomSmall;
+import static java.lang.System.currentTimeMillis;
+import static java.time.LocalDateTime.now;
 
 @Component
 public class ScheduledTasks {
@@ -37,35 +39,41 @@ public class ScheduledTasks {
   @Autowired
   Dao mDao;
 
-  private static String fId;
-  private static long fReplayTime;
-
-  public static void setUserReplay(String aId, long aReplayTime){
-    fId = aId;
-    fReplayTime = aReplayTime;
-  }
-
-  @Scheduled(fixedRate = 1000)
-  public void StartingGame() {
+  @Scheduled(fixedRate = 5000)
+  public void StartingGame() throws IOException {
     List<GameStatus> gameStatuses = mDao.getAllGameStatus();
     if (gameStatuses != null && gameStatuses.size() > 0) {
       for (GameStatus gameStatus : gameStatuses) {
         if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
           String answer = getRandomSmall();
           String quest = new StringBuffer(answer).reverse().toString();
-          // LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
-          // LOG.info("User Id : {} Replay time : {}", fId, new Timestamp(fReplayTime));
+          LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
 
-          // List<GameWord> gameWords = mDao.getAllGameWord();
-          // if (gameWords != null && gameWords.size() > 0) {
-          //
-          // }
-          // mDao.setGameWord(
-          //     new GameWord(
-          //         quest,
-          //         answer,
-          //
-          //     ));
+          List<GameWord> gameWords = mDao.getAllGameWord();
+          if (gameWords != null && gameWords.size() > 0) {
+            for (GameWord gameWord : gameWords) {
+              String id = gameWord.getId();
+              if (id.equalsIgnoreCase(gameStatus.getId())) {
+                int wordCount = gameWord.getWordCount();
+                int gameLevel = gameWord.getGameLevel();
+                if (wordCount == 10) {
+                  gameLevel++;
+                  wordCount = 1;
+                }
+                pushMessage(fChannelAccessToken, id, quest);
+                mDao.setGameWord(
+                    new GameWord(
+                        id,
+                        quest,
+                        answer,
+                        wordCount,
+                        gameLevel,
+                        currentTimeMillis(),
+                        0
+                    ));
+              }
+            }
+          }
         }
       }
     }
@@ -90,7 +98,7 @@ public class ScheduledTasks {
   private void botChatOnTwoDay(Date aNow, UserChat chat) {
     Timestamp lastTimeChat = new Timestamp(chat.getLastTime());
     LocalDateTime timeLimit = lastTimeChat.toLocalDateTime().plusDays(2);
-    if (timeLimit.isBefore(LocalDateTime.now())) {
+    if (timeLimit.isBefore(now())) {
       LOG.info("Start push message");
       try {
         String text = "Kmana aja ? kok gak ngobrol sama aku lagi ?";
