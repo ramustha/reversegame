@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.ramusthastudio.reversegame.task.ScheduledTasks.setUserReplay;
 import static com.ramusthastudio.reversegame.util.BotHelper.FOLLOW;
 import static com.ramusthastudio.reversegame.util.BotHelper.JOIN;
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_HELP;
@@ -157,8 +156,6 @@ public class LineBotController {
           String type = aMessage.type();
           String text = aMessage.text();
           if (type.equals(MESSAGE_TEXT)) {
-            setUserReplay(aUserId, aTimestamp);
-
             if (text.contains(KEY_STOP_GAME)) {
               GameStatus gameStatus = new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp);
               GameStatus status = fDao.getGameStatusById(aUserId);
