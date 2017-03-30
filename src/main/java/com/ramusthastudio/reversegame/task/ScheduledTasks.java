@@ -53,8 +53,8 @@ public class ScheduledTasks {
         if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
           String answer = getRandomSmall();
           String quest = new StringBuffer(answer).reverse().toString();
-          LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
-          LOG.info("User Id : {} Replay time : {}", fId, new Timestamp(fReplayTime));
+          // LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
+          // LOG.info("User Id : {} Replay time : {}", fId, new Timestamp(fReplayTime));
 
           // List<GameWord> gameWords = mDao.getAllGameWord();
           // if (gameWords != null && gameWords.size() > 0) {

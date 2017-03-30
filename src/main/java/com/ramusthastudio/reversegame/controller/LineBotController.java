@@ -131,10 +131,9 @@ public class LineBotController {
   }
 
   private void sourceUserProccess(String aEventType, String aReplayToken, long aTimestamp, Message aMessage, Postback aPostback, String aUserId) {
-    UserProfileResponse profile = null;
     try {
       LOG.info("Start find UserLine on database...");
-      profile = getUserProfile(fChannelAccessToken, aUserId);
+      UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
       UserLine mUserLine = fDao.getUserLineById(profile.getUserId());
       if (mUserLine == null) {
         LOG.info("Start save UserLine to database...");
@@ -168,7 +167,8 @@ public class LineBotController {
             } else {
               fDao.setGameStatus(gameStatus);
             }
-            replayMessage(fChannelAccessToken, aReplayToken, text);
+            replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti");
+            confirmStartGame(fChannelAccessToken, aUserId);
           }
 
           LOG.info("isValidMessage...");
