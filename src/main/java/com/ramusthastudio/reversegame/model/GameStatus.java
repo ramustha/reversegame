@@ -18,6 +18,13 @@ public class GameStatus {
     lastTime = aLastTime;
   }
 
+  public GameStatus(String aId, int aWordTrue, int aWordFalse, long aLastTime) {
+    id = aId;
+    wordTrue = aWordTrue;
+    wordFalse = aWordFalse;
+    lastTime = aLastTime;
+  }
+
   public GameStatus(String aId, String aStatus, int aWordTrue, int aWordFalse, long aLastTime) {
     id = aId;
     status = aStatus;

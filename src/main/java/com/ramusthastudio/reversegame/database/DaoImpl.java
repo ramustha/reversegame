@@ -37,7 +37,7 @@ public class DaoImpl implements Dao {
   private final static String SQL_GAME_WORD_GET_BY_ID = SQL_SELECT_ALL_GAME_WORD + " WHERE LOWER(id) LIKE LOWER(?) ;";
   private final static String SQL_INSERT_GAME_WORD = "INSERT INTO game_word (id, word_quest, word_answer, word_count, game_level, start_quest, start_answer) VALUES (?, ?, ?, ?, ?, ?, ?);";
   private final static String SQL_UPDATE_GAME_WORD = "UPDATE game_word SET word_quest=?, word_answer=?, word_count=?, game_level=?, start_quest=?, start_answer=? WHERE LOWER(id) LIKE LOWER(?);";
-  private final static String SQL_DELETE_GAME_WORD = "DELETE FROM game_word WHERE LOWER(id) LIKE LOWER(?);";
+  private final static String SQL_DELETE_GAME_WORD = "DELETE FROM game_word WHERE LOWER(id) LIKE LOWER(?) ;";
 
   private final static String SQL_SELECT_ALL_GAME_LEADERBOARD = "SELECT * FROM game_leaderboard";
   private final static String SQL_GAME_LEADERBOARD_GET_BY_ID = SQL_SELECT_ALL_GAME_LEADERBOARD + " WHERE LOWER(id) LIKE LOWER(?) ;";
@@ -254,7 +254,7 @@ public class DaoImpl implements Dao {
   }
 
   @Override public void deleteGameWord(String aUserId) {
-    mJdbc.query(SQL_DELETE_GAME_WORD, MULTIPLE_GAME_WORD);
+    mJdbc.query(SQL_DELETE_GAME_WORD, new Object[] {"%" + aUserId + "%"}, SINGLE_GAME_WORD);
   }
 
   @Override public List<UserLine> getAllUserLine() {

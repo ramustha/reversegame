@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3575590f-db3b-4bfb-add2-0f36cac24155" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java" afterPath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java" afterPath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -103,8 +104,8 @@
           <file leaf-file-name="LineBotController.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="238">
-                  <caret line="168" column="18" lean-forward="false" selection-start-line="168" selection-start-column="18" selection-end-line="168" selection-end-column="18" />
+                <state relative-caret-position="272">
+                  <caret line="167" column="31" lean-forward="true" selection-start-line="167" selection-start-column="31" selection-end-line="167" selection-end-column="31" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -112,32 +113,34 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="DaoImpl.java" pinned="false" current-in-tab="false">
+          <file leaf-file-name="DaoImpl.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="101">
-                  <caret line="294" column="30" lean-forward="false" selection-start-line="294" selection-start-column="30" selection-end-line="294" selection-end-column="30" />
+                <state relative-caret-position="159">
+                  <caret line="260" column="69" lean-forward="true" selection-start-line="260" selection-start-column="69" selection-end-line="260" selection-end-column="69" />
                   <folding>
-                    <marker date="1490858109296" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
-                    <marker date="1490858109296" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
-                    <marker date="1490858109296" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
-                    <marker date="1490858109296" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
-                    <marker date="1490858109296" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
-                    <marker date="1490858109296" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
-                    <marker date="1490858109296" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
-                    <marker date="1490858109296" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
-                    <marker date="1490858109296" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
-                    <marker date="1490858109296" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
-                    <marker date="1490858109296" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
-                    <marker date="1490858109296" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
-                    <marker date="1490858109296" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
-                    <marker date="1490858109296" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
-                    <marker date="1490858109296" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
-                    <marker date="1490858109296" expanded="true" signature="2839:2890" ph="DELETE FROM " />
-                    <marker date="1490858109296" expanded="true" signature="2960:2990" ph="SELECT * FRO... game_leaderboard" />
-                    <marker date="1490858109296" expanded="true" signature="3091:3121" ph="SELECT * FRO... game_leaderboard" />
-                    <marker date="1490858109296" expanded="true" signature="3187:3304" ph="INSERT INTO game_leaderboard... " />
-                    <marker date="1490858109296" expanded="true" signature="3369:3494" ph="UPDATE game_... " />
+                    <marker date="1490865210430" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
+                    <marker date="1490865210430" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
+                    <marker date="1490865210430" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
+                    <marker date="1490865210430" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
+                    <marker date="1490865210430" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
+                    <marker date="1490865210430" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
+                    <marker date="1490865210430" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
+                    <marker date="1490865210430" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
+                    <marker date="1490865210430" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
+                    <marker date="1490865210430" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
+                    <marker date="1490865210430" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
+                    <marker date="1490865210430" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
+                    <marker date="1490865210430" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
+                    <marker date="1490865210430" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
+                    <marker date="1490865210430" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
+                    <marker date="1490865210430" expanded="true" signature="2839:2867" ph="DELETE FROM " />
+                    <marker date="1490865210430" expanded="true" signature="2839:2890" ph="DELETE FROM " />
+                    <marker date="1490865210430" expanded="true" signature="2839:2892" ph="DELETE FROM " />
+                    <marker date="1490865210430" expanded="true" signature="2961:2991" ph="SELECT * FRO... game_leaderboard" />
+                    <marker date="1490865210430" expanded="true" signature="3092:3122" ph="SELECT * FRO... game_leaderboard" />
+                    <marker date="1490865210430" expanded="true" signature="3188:3305" ph="INSERT INTO game_leaderboard... " />
+                    <marker date="1490865210430" expanded="true" signature="3370:3495" ph="UPDATE game_... " />
                   </folding>
                 </state>
               </provider>
@@ -146,18 +149,18 @@
           <file leaf-file-name="Dao.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/Dao.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="338">
-                  <caret line="29" column="10" lean-forward="false" selection-start-line="29" selection-start-column="2" selection-end-line="29" selection-end-column="10" />
+                <state relative-caret-position="219">
+                  <caret line="28" column="7" lean-forward="false" selection-start-line="28" selection-start-column="7" selection-end-line="28" selection-end-column="7" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="ScheduledTasks.java" pinned="false" current-in-tab="true">
+          <file leaf-file-name="ScheduledTasks.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="35">
-                  <caret line="41" column="26" lean-forward="false" selection-start-line="41" selection-start-column="26" selection-end-line="41" selection-end-column="26" />
+                <state relative-caret-position="290">
+                  <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -219,6 +222,7 @@
       <find>\w{1,2}\b</find>
       <find>\w{2,}\b</find>
       <find>^\w{1,2}$</find>
+      <find>SQL_DELETE_GAME_WORD</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -629,11 +633,11 @@
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/Dao.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/model/GameLeaderboard.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/model/GameStatus.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/model/GameWord.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java" />
       </list>
     </option>
   </component>
@@ -1385,12 +1389,12 @@
       <workItem from="1490795845129" duration="371000" />
       <workItem from="1490796277498" duration="3213000" />
       <workItem from="1490838120091" duration="37000" />
-      <workItem from="1490838164416" duration="24380000" />
+      <workItem from="1490838164416" duration="25076000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28001000" />
+    <option name="totallyTimeSpent" value="28697000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1620" height="920" extended-state="0" />
@@ -1509,26 +1513,28 @@
         <state relative-caret-position="1632">
           <caret line="96" column="3" lean-forward="false" selection-start-line="96" selection-start-column="3" selection-end-line="96" selection-end-column="3" />
           <folding>
-            <marker date="1490858109296" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
-            <marker date="1490858109296" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
-            <marker date="1490858109296" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
-            <marker date="1490858109296" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
-            <marker date="1490858109296" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
-            <marker date="1490858109296" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
-            <marker date="1490858109296" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
-            <marker date="1490858109296" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
-            <marker date="1490858109296" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
-            <marker date="1490858109296" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
-            <marker date="1490858109296" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
-            <marker date="1490858109296" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
-            <marker date="1490858109296" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
-            <marker date="1490858109296" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
-            <marker date="1490858109296" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
-            <marker date="1490858109296" expanded="true" signature="2839:2890" ph="DELETE FROM " />
-            <marker date="1490858109296" expanded="true" signature="2960:2990" ph="SELECT * FRO... game_leaderboard" />
-            <marker date="1490858109296" expanded="true" signature="3091:3121" ph="SELECT * FRO... game_leaderboard" />
-            <marker date="1490858109296" expanded="true" signature="3187:3304" ph="INSERT INTO game_leaderboard... " />
-            <marker date="1490858109296" expanded="true" signature="3369:3494" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
+            <marker date="1490865210430" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
+            <marker date="1490865210430" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
+            <marker date="1490865210430" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
+            <marker date="1490865210430" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
+            <marker date="1490865210430" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
+            <marker date="1490865210430" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
+            <marker date="1490865210430" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
+            <marker date="1490865210430" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
+            <marker date="1490865210430" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
+            <marker date="1490865210430" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
+            <marker date="1490865210430" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
+            <marker date="1490865210430" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
+            <marker date="1490865210430" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="2839:2867" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2839:2890" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2839:2892" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2961:2991" ph="SELECT * FRO... game_leaderboard" />
+            <marker date="1490865210430" expanded="true" signature="3092:3122" ph="SELECT * FRO... game_leaderboard" />
+            <marker date="1490865210430" expanded="true" signature="3188:3305" ph="INSERT INTO game_leaderboard... " />
+            <marker date="1490865210430" expanded="true" signature="3370:3495" ph="UPDATE game_... " />
           </folding>
         </state>
       </provider>
@@ -1620,26 +1626,28 @@
         <state relative-caret-position="1411">
           <caret line="96" column="3" lean-forward="false" selection-start-line="96" selection-start-column="3" selection-end-line="96" selection-end-column="3" />
           <folding>
-            <marker date="1490858109296" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
-            <marker date="1490858109296" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
-            <marker date="1490858109296" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
-            <marker date="1490858109296" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
-            <marker date="1490858109296" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
-            <marker date="1490858109296" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
-            <marker date="1490858109296" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
-            <marker date="1490858109296" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
-            <marker date="1490858109296" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
-            <marker date="1490858109296" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
-            <marker date="1490858109296" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
-            <marker date="1490858109296" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
-            <marker date="1490858109296" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
-            <marker date="1490858109296" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
-            <marker date="1490858109296" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
-            <marker date="1490858109296" expanded="true" signature="2839:2890" ph="DELETE FROM " />
-            <marker date="1490858109296" expanded="true" signature="2960:2990" ph="SELECT * FRO... game_leaderboard" />
-            <marker date="1490858109296" expanded="true" signature="3091:3121" ph="SELECT * FRO... game_leaderboard" />
-            <marker date="1490858109296" expanded="true" signature="3187:3304" ph="INSERT INTO game_leaderboard... " />
-            <marker date="1490858109296" expanded="true" signature="3369:3494" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
+            <marker date="1490865210430" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
+            <marker date="1490865210430" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
+            <marker date="1490865210430" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
+            <marker date="1490865210430" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
+            <marker date="1490865210430" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
+            <marker date="1490865210430" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
+            <marker date="1490865210430" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
+            <marker date="1490865210430" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
+            <marker date="1490865210430" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
+            <marker date="1490865210430" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
+            <marker date="1490865210430" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
+            <marker date="1490865210430" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
+            <marker date="1490865210430" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="2839:2867" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2839:2890" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2839:2892" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2961:2991" ph="SELECT * FRO... game_leaderboard" />
+            <marker date="1490865210430" expanded="true" signature="3092:3122" ph="SELECT * FRO... game_leaderboard" />
+            <marker date="1490865210430" expanded="true" signature="3188:3305" ph="INSERT INTO game_leaderboard... " />
+            <marker date="1490865210430" expanded="true" signature="3370:3495" ph="UPDATE game_... " />
           </folding>
         </state>
       </provider>
@@ -1848,43 +1856,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="101">
-          <caret line="294" column="30" lean-forward="false" selection-start-line="294" selection-start-column="30" selection-end-line="294" selection-end-column="30" />
-          <folding>
-            <marker date="1490858109296" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
-            <marker date="1490858109296" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
-            <marker date="1490858109296" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
-            <marker date="1490858109296" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
-            <marker date="1490858109296" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
-            <marker date="1490858109296" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
-            <marker date="1490858109296" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
-            <marker date="1490858109296" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
-            <marker date="1490858109296" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
-            <marker date="1490858109296" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
-            <marker date="1490858109296" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
-            <marker date="1490858109296" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
-            <marker date="1490858109296" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
-            <marker date="1490858109296" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
-            <marker date="1490858109296" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
-            <marker date="1490858109296" expanded="true" signature="2839:2890" ph="DELETE FROM " />
-            <marker date="1490858109296" expanded="true" signature="2960:2990" ph="SELECT * FRO... game_leaderboard" />
-            <marker date="1490858109296" expanded="true" signature="3091:3121" ph="SELECT * FRO... game_leaderboard" />
-            <marker date="1490858109296" expanded="true" signature="3187:3304" ph="INSERT INTO game_leaderboard... " />
-            <marker date="1490858109296" expanded="true" signature="3369:3494" ph="UPDATE game_... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/Dao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="29" column="10" lean-forward="false" selection-start-line="29" selection-start-column="2" selection-end-line="29" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
@@ -1901,22 +1872,61 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="168" column="18" lean-forward="false" selection-start-line="168" selection-start-column="18" selection-end-line="168" selection-end-column="18" />
+        <state relative-caret-position="290">
+          <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="35">
-          <caret line="41" column="26" lean-forward="false" selection-start-line="41" selection-start-column="26" selection-end-line="41" selection-end-column="26" />
+        <state relative-caret-position="272">
+          <caret line="167" column="31" lean-forward="true" selection-start-line="167" selection-start-column="31" selection-end-line="167" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/Dao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="219">
+          <caret line="28" column="7" lean-forward="false" selection-start-line="28" selection-start-column="7" selection-end-line="28" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="260" column="69" lean-forward="true" selection-start-line="260" selection-start-column="69" selection-end-line="260" selection-end-column="69" />
+          <folding>
+            <marker date="1490865210430" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
+            <marker date="1490865210430" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
+            <marker date="1490865210430" expanded="true" signature="1081:1170" ph="INSERT INTO user_line... " />
+            <marker date="1490865210430" expanded="true" signature="1233:1256" ph="SELECT * FRO... user_chat" />
+            <marker date="1490865210430" expanded="true" signature="1343:1373" ph="SELECT * FRO... user_chat" />
+            <marker date="1490865210430" expanded="true" signature="1432:1513" ph="INSERT INTO user_chat... " />
+            <marker date="1490865210430" expanded="true" signature="1571:1667" ph="UPDATE user_... " />
+            <marker date="1490865210430" expanded="true" signature="1732:1757" ph="SELECT * FRO... game_status" />
+            <marker date="1490865210430" expanded="true" signature="1848:1878" ph="SELECT * FRO... game_status" />
+            <marker date="1490865210430" expanded="true" signature="1939:2032" ph="INSERT INTO game_status... " />
+            <marker date="1490865210430" expanded="true" signature="2092:2193" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="2256:2279" ph="SELECT * FRO... game_word" />
+            <marker date="1490865210430" expanded="true" signature="2366:2396" ph="SELECT * FRO... game_word" />
+            <marker date="1490865210430" expanded="true" signature="2455:2586" ph="INSERT INTO game_word... " />
+            <marker date="1490865210430" expanded="true" signature="2644:2781" ph="UPDATE game_... " />
+            <marker date="1490865210430" expanded="true" signature="2839:2867" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2839:2890" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2839:2892" ph="DELETE FROM " />
+            <marker date="1490865210430" expanded="true" signature="2961:2991" ph="SELECT * FRO... game_leaderboard" />
+            <marker date="1490865210430" expanded="true" signature="3092:3122" ph="SELECT * FRO... game_leaderboard" />
+            <marker date="1490865210430" expanded="true" signature="3188:3305" ph="INSERT INTO game_leaderboard... " />
+            <marker date="1490865210430" expanded="true" signature="3370:3495" ph="UPDATE game_... " />
           </folding>
         </state>
       </provider>

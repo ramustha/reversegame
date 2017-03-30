@@ -162,17 +162,37 @@ public class LineBotController {
               GameStatus status = fDao.getGameStatusById(aUserId);
               if (status != null) {
                 if (status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                  LOG.info("Start update GameStatus...");
                   fDao.updateGameStatus(gameStatus);
-                  replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
-                  confirmStartGame(fChannelAccessToken, aUserId);
-
                   LOG.info("Start deleting GameWord...");
                   fDao.deleteGameWord(aUserId);
-                }else {
+
+                  replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
+                  confirmStartGame(fChannelAccessToken, aUserId);
+                } else {
                   replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
                 }
               } else {
                 fDao.setGameStatus(gameStatus);
+              }
+            } else {
+              GameStatus status = fDao.getGameStatusById(aUserId);
+              if (status != null) {
+                if (status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                  LOG.info("User answer..." + text);
+                  GameWord gameWord = fDao.getGameWordById(aUserId);
+                  String answer = gameWord.getWordAnswer().trim();
+                  String userAnswer = text.trim();
+                  int correct = status.getWordTrue();
+                  int incorrect = status.getWordFalse();
+                  if (answer.equalsIgnoreCase(userAnswer)) {
+                    LOG.info("Correct answer..." + answer);
+                    fDao.setGameStatus(new GameStatus(aUserId, ++correct, incorrect, aTimestamp));
+                  }else {
+                    LOG.info("Incorrect answer..." + answer);
+                    fDao.setGameStatus(new GameStatus(aUserId, correct, ++incorrect, aTimestamp));
+                  }
+                }
               }
             }
 
