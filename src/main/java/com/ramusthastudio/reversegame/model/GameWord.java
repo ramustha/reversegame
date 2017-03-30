@@ -4,12 +4,12 @@ public class GameWord {
   private String id;
   private String wordQuest;
   private String wordAnswer;
-  private String wordCount;
-  private String gameLevel;
+  private int wordCount;
+  private int gameLevel;
   private long startQuest;
   private long startAnswer;
 
-  public GameWord(String aId, String aWordQuest, String aWordAnswer, String aWordCount, String aGameLevel, long aStartQuest, long aStartAnswer) {
+  public GameWord(String aId, String aWordQuest, String aWordAnswer, int aWordCount, int aGameLevel, long aStartQuest, long aStartAnswer) {
     id = aId;
     wordQuest = aWordQuest;
     wordAnswer = aWordAnswer;
@@ -22,8 +22,8 @@ public class GameWord {
   public String getId() { return id; }
   public String getWordQuest() { return wordQuest; }
   public String getWordAnswer() { return wordAnswer; }
-  public String getWordCount() { return wordCount; }
-  public String getGameLevel() { return gameLevel; }
+  public int getWordCount() { return wordCount; }
+  public int getGameLevel() { return gameLevel; }
   public long getStartQuest() { return startQuest; }
   public long getStartAnswer() { return startAnswer; }
 
@@ -39,11 +39,11 @@ public class GameWord {
     wordAnswer = aWordAnswer;
     return this;
   }
-  public GameWord setWordCount(String aWordCount) {
+  public GameWord setWordCount(int aWordCount) {
     wordCount = aWordCount;
     return this;
   }
-  public GameWord setGameLevel(String aGameLevel) {
+  public GameWord setGameLevel(int aGameLevel) {
     gameLevel = aGameLevel;
     return this;
   }

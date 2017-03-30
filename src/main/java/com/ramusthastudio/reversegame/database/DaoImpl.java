@@ -79,8 +79,8 @@ public class DaoImpl implements Dao {
           aRs.getString("id"),
           aRs.getString("word_quest"),
           aRs.getString("word_answer"),
-          aRs.getString("word_count"),
-          aRs.getString("game_level"),
+          aRs.getInt("word_count"),
+          aRs.getInt("game_level"),
           aRs.getTimestamp("start_quest").getTime(),
           aRs.getTimestamp("start_answer").getTime()
       );
@@ -142,8 +142,8 @@ public class DaoImpl implements Dao {
           aRs.getString("id"),
           aRs.getString("word_quest"),
           aRs.getString("word_answer"),
-          aRs.getString("word_count"),
-          aRs.getString("game_level"),
+          aRs.getInt("word_count"),
+          aRs.getInt("game_level"),
           aRs.getTimestamp("start_quest").getTime(),
           aRs.getTimestamp("start_answer").getTime()
 

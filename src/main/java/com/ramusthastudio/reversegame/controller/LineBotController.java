@@ -61,6 +61,8 @@ public class LineBotController {
   @Autowired
   Dao fDao;
 
+  Thread fGameThread;
+
   @RequestMapping(value = "/callback", method = RequestMethod.POST)
   public ResponseEntity<String> callback(
       @RequestHeader("X-Line-Signature") String aXLineSignature,
@@ -72,6 +74,12 @@ public class LineBotController {
     LOG.info("The Signature is: {} ", (aXLineSignature != null && aXLineSignature.length() > 0) ? aXLineSignature : "N/A");
     final boolean valid = new LineSignatureValidator(fChannelSecret.getBytes()).validateSignature(aPayload.getBytes(), aXLineSignature);
     LOG.info("The Signature is: {} ", valid ? "valid" : "tidak valid");
+
+    if (fGameThread == null) {
+      fGameThread = new Thread(new GameTask());
+      fGameThread.setDaemon(true);
+    }
+    if (!fGameThread.isAlive()) { fGameThread.start(); }
 
     if (aPayload != null && aPayload.length() > 0) {
       Gson gson = new Gson();
@@ -140,8 +148,6 @@ public class LineBotController {
       LOG.info("End find UserLine on database..." + mUserLine);
     } catch (IOException ignored) {}
 
-    boolean isValidMessage = false;
-
     try {
       switch (aEventType) {
         case UNFOLLOW:
@@ -152,7 +158,6 @@ public class LineBotController {
           greetingMessage(fChannelAccessToken, aUserId);
           instructionMessage(fChannelAccessToken, aUserId);
           confirmStartGame(fChannelAccessToken, aUserId);
-          isValidMessage = true;
           break;
         case MESSAGE:
           String type = aMessage.type();
@@ -173,7 +178,16 @@ public class LineBotController {
             }
             replayMessage(fChannelAccessToken, aReplayToken, text);
           }
-          isValidMessage = true;
+
+          LOG.info("isValidMessage...");
+          UserChat userChat = fDao.getUserChatById(aUserId);
+          if (userChat != null) {
+            LOG.info("Start UserChat history...");
+            fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+          } else {
+            LOG.info("Start saving UserChat history...");
+            fDao.setUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+          }
           break;
         case POSTBACK:
           String pd = aPostback.data();
@@ -196,22 +210,15 @@ public class LineBotController {
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
           }
-          isValidMessage = true;
           break;
       }
 
-      if (isValidMessage) {
-        LOG.info("isValidMessage...");
-        UserChat userChat = fDao.getUserChatById(aUserId);
-        if (userChat != null) {
-          LOG.info("Start UserChat history...");
-          fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
-        } else {
-          LOG.info("Start saving UserChat history...");
-          fDao.setUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
-        }
-      }
-
     } catch (IOException aE) { LOG.error("Message {}", aE.getMessage()); }
+  }
+
+  static class GameTask implements Runnable {
+    @Override public void run() {
+      LOG.info("Running...");
+    }
   }
 }
