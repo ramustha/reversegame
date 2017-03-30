@@ -210,31 +210,19 @@ public class LineBotController {
 
           }
 
-          // LOG.info("isValidMessage...");
-          // UserChat userChatDb = fDao.getUserChatById(aUserId);
-          // if (userChatDb != null) {
-          //   LOG.info("Start UserChat history...");
-          //   fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
-          // } else {
-          //   LOG.info("Start saving UserChat history...");
-          //   fDao.setUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
-          // }
+          LOG.info("isValidMessage...");
+          LOG.info("Start UserChat history...");
+          fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
           break;
         case POSTBACK:
           String pd = aPostback.data();
           if (pd.contains(KEY_START_GAME)) {
-            GameStatus gameStatus = new GameStatus(aUserId, KEY_START_GAME, aTimestamp);
-            GameStatus status = fDao.getGameStatusById(aUserId);
-            if (status != null && status.getStatus().equalsIgnoreCase(KEY_STOP_GAME)) {
-              fDao.updateGameStatus(gameStatus);
-            } else {
-              fDao.setGameStatus(gameStatus);
-            }
+            LOG.info("Start update GameStatus...");
+            fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, aTimestamp));
+            LOG.info("Start update GameWord...");
+            fDao.updateGameWord(new GameWord(aUserId, 0, 1));
+
             replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
-
-            LOG.info("Start saving GameWord...");
-            fDao.setGameWord(new GameWord(aUserId, 0, 1));
-
           } else if (pd.contains(KEY_LEADERBOARD)) {
             replayMessage(fChannelAccessToken, aReplayToken, pd);
           } else if (pd.contains(KEY_HELP)) {
