@@ -162,13 +162,13 @@ public class LineBotController {
               GameStatus status = fDao.getGameStatusById(aUserId);
               if (status != null) {
                 if (status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                  replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
+                  confirmStartGame(fChannelAccessToken, aUserId);
+
                   LOG.info("Start update GameStatus...");
                   fDao.updateGameStatus(gameStatus);
                   LOG.info("Start deleting GameWord...");
                   fDao.deleteGameWord(aUserId);
-
-                  replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
-                  confirmStartGame(fChannelAccessToken, aUserId);
                 } else {
                   replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
                 }
@@ -198,15 +198,15 @@ public class LineBotController {
 
           }
 
-          LOG.info("isValidMessage...");
-          UserChat userChat = fDao.getUserChatById(aUserId);
-          if (userChat != null) {
-            LOG.info("Start UserChat history...");
-            fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
-          } else {
-            LOG.info("Start saving UserChat history...");
-            fDao.setUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
-          }
+          // LOG.info("isValidMessage...");
+          // UserChat userChat = fDao.getUserChatById(aUserId);
+          // if (userChat != null) {
+          //   LOG.info("Start UserChat history...");
+          //   fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+          // } else {
+          //   LOG.info("Start saving UserChat history...");
+          //   fDao.setUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+          // }
           break;
         case POSTBACK:
           String pd = aPostback.data();

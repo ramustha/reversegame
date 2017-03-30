@@ -253,10 +253,6 @@ public class DaoImpl implements Dao {
     );
   }
 
-  @Override public void deleteGameWord(String aUserId) {
-    mJdbc.query(SQL_DELETE_GAME_WORD, new Object[] {"%" + aUserId + "%"}, SINGLE_GAME_WORD);
-  }
-
   @Override public List<UserLine> getAllUserLine() {
     return mJdbc.query(SQL_SELECT_ALL_USER_LINE, MULTIPLE_USER_LINE);
   }
@@ -315,5 +311,9 @@ public class DaoImpl implements Dao {
       LOG.error("Error when trying get GameLeaderboard cause : " + e.getMessage());
       return null;
     }
+  }
+
+  @Override public void deleteGameWord(String aUserId) {
+    mJdbc.update(SQL_DELETE_GAME_WORD, "%" + aUserId + "%");
   }
 }
