@@ -9,6 +9,12 @@ public class GameWord {
   private long startQuest;
   private long startAnswer;
 
+  public GameWord(String aId, int aWordCount, int aGameLevel) {
+    id = aId;
+    wordCount = aWordCount;
+    gameLevel = aGameLevel;
+  }
+
   public GameWord(String aId, String aWordQuest, String aWordAnswer, int aWordCount, int aGameLevel, long aStartQuest, long aStartAnswer) {
     id = aId;
     wordQuest = aWordQuest;

@@ -6,6 +6,7 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.ramusthastudio.reversegame.database.Dao;
 import com.ramusthastudio.reversegame.model.Events;
 import com.ramusthastudio.reversegame.model.GameStatus;
+import com.ramusthastudio.reversegame.model.GameWord;
 import com.ramusthastudio.reversegame.model.Message;
 import com.ramusthastudio.reversegame.model.Payload;
 import com.ramusthastudio.reversegame.model.Postback;
@@ -164,7 +165,9 @@ public class LineBotController {
               } else {
                 fDao.setGameStatus(gameStatus);
               }
-              replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti");
+              replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
+              LOG.info("Start deleting GameWord...");
+              fDao.deleteGameWord(aUserId);
               confirmStartGame(fChannelAccessToken, aUserId);
             }
 
@@ -190,7 +193,11 @@ public class LineBotController {
             } else {
               fDao.setGameStatus(gameStatus);
             }
-            replayMessage(fChannelAccessToken, aReplayToken, "Game mulai 3 detik dari sekarang");
+            replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
+
+            LOG.info("Start saving GameWord...");
+            fDao.setGameWord(new GameWord(aUserId, 0, 0));
+
           } else if (pd.contains(KEY_LEADERBOARD)) {
             replayMessage(fChannelAccessToken, aReplayToken, pd);
           } else if (pd.contains(KEY_HELP)) {

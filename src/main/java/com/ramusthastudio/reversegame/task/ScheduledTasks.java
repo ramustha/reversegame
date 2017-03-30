@@ -45,32 +45,24 @@ public class ScheduledTasks {
     if (gameStatuses != null && gameStatuses.size() > 0) {
       for (GameStatus gameStatus : gameStatuses) {
         if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-          String answer = getRandomSmall();
-          String quest = new StringBuffer(answer).reverse().toString();
-          LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
-
           List<GameWord> gameWords = mDao.getAllGameWord();
           if (gameWords != null && gameWords.size() > 0) {
             for (GameWord gameWord : gameWords) {
               String id = gameWord.getId();
               if (id.equalsIgnoreCase(gameStatus.getId())) {
+                String answer = getRandomSmall();
+                String quest = new StringBuffer(answer).reverse().toString();
+                LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
+
                 int wordCount = gameWord.getWordCount();
                 int gameLevel = gameWord.getGameLevel();
                 if (wordCount == 10) {
                   gameLevel++;
-                  wordCount = 1;
+                  wordCount = 0;
                 }
                 pushMessage(fChannelAccessToken, id, quest);
                 mDao.setGameWord(
-                    new GameWord(
-                        id,
-                        quest,
-                        answer,
-                        wordCount,
-                        gameLevel,
-                        currentTimeMillis(),
-                        0
-                    ));
+                    new GameWord(id, quest, answer, ++wordCount, gameLevel, currentTimeMillis(), 0));
               }
             }
           }
