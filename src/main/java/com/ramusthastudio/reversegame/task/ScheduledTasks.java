@@ -4,6 +4,7 @@ import com.ramusthastudio.reversegame.database.Dao;
 import com.ramusthastudio.reversegame.model.GameStatus;
 import com.ramusthastudio.reversegame.model.GameWord;
 import com.ramusthastudio.reversegame.model.UserChat;
+import com.ramusthastudio.reversegame.util.StickerHelper;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -18,7 +19,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_START_GAME;
+import static com.ramusthastudio.reversegame.util.BotHelper.KEY_STOP_GAME;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
+import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
+import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_TWO_THUMBS;
+import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_USELESS;
 import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomLarge;
 import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomMedium;
 import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomSmall;
@@ -39,44 +44,57 @@ public class ScheduledTasks {
   String fChannelAccessToken;
 
   @Autowired
-  Dao mDao;
+  Dao fDao;
 
   @Scheduled(fixedRate = 8000)
   public void StartingGame() throws IOException {
-    List<GameStatus> gameStatuses = mDao.getAllGameStatus();
+    List<GameStatus> gameStatuses = fDao.getAllGameStatus();
     if (gameStatuses != null) {
       for (GameStatus gameStatus : gameStatuses) {
         if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
           String userId = gameStatus.getId();
+          String status = gameStatus.getStatus();
+          int wordTrue = gameStatus.getWordTrue();
+          int wordFalse = gameStatus.getWordFalse();
 
-          GameWord gameWord = mDao.getGameWordById(userId);
-          int wordCount = gameWord.getWordCount();
-          int gameLevel = gameWord.getGameLevel();
-          if (wordCount == 20) {
-            gameLevel++;
-            wordCount = 0;
+          if (wordFalse == 3) {
+            pushMessage(fChannelAccessToken, gameStatus.getId(), "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
+            stickerMessage(fChannelAccessToken, gameStatus.getId(), new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
+
+            LOG.info("Game over....");
+            fDao.updateGameStatus(new GameStatus(gameStatus.getId(), KEY_STOP_GAME));
           } else {
-            wordCount++;
+            GameWord gameWord = fDao.getGameWordById(userId);
+            int wordCount = gameWord.getWordCount();
+            int gameLevel = gameWord.getGameLevel();
+            if (wordCount == 10) {
+              gameLevel++;
+              wordCount = 0;
+            } else {
+              wordCount++;
+            }
+
+            String answer = getRandomSmall();
+            String quest = new StringBuffer(answer).reverse().toString();
+            if (gameLevel == 1) {
+              answer = getRandomSmall();
+              quest = new StringBuffer(answer).reverse().toString();
+            } else if (gameLevel == 2) {
+              answer = getRandomMedium();
+              quest = new StringBuffer(answer).reverse().toString();
+            } else if (gameLevel == 3) {
+              answer = getRandomLarge();
+              quest = new StringBuffer(answer).reverse().toString();
+            }
+
+            LOG.info("User not answering....");
+            fDao.updateGameStatus(new GameStatus(gameStatus.getId(), status, wordTrue, ++wordFalse, currentTimeMillis()));
+
+            LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
+            pushMessage(fChannelAccessToken, gameStatus.getId(), quest);
+
+            fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
           }
-
-          String answer = getRandomSmall();
-          String quest = new StringBuffer(answer).reverse().toString();
-          if (gameLevel == 1) {
-            answer = getRandomSmall();
-            quest = new StringBuffer(answer).reverse().toString();
-          }else if (gameLevel == 2) {
-            answer = getRandomMedium();
-            quest = new StringBuffer(answer).reverse().toString();
-          }else if (gameLevel == 3) {
-            answer = getRandomLarge();
-            quest = new StringBuffer(answer).reverse().toString();
-          }
-
-          LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
-          pushMessage(fChannelAccessToken, gameStatus.getId(), quest);
-
-          mDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
-
         }
       }
     }
@@ -87,7 +105,7 @@ public class ScheduledTasks {
     try {
       Date now = new Date();
       // LOG.info("The time is now {}", dateFormat.format(now));
-      List<UserChat> userChat = mDao.getAllUserChat();
+      List<UserChat> userChat = fDao.getAllUserChat();
       if (userChat != null && userChat.size() > 0) {
         for (UserChat chat : userChat) {
           botChatOnTwoDay(now, chat);
@@ -106,7 +124,7 @@ public class ScheduledTasks {
       try {
         String text = "Kmana aja ? kok gak ngobrol sama aku lagi ?";
         pushMessage(fChannelAccessToken, chat.getUserId(), text);
-        mDao.updateUserChat(new UserChat(chat.getUserId(), text, aNow.getTime()));
+        fDao.updateUserChat(new UserChat(chat.getUserId(), text, aNow.getTime()));
       } catch (IOException aE) {
         LOG.error("Start push message error message : " + aE.getMessage());
       }
