@@ -60,7 +60,7 @@ public class ScheduledTasks {
                 //   gameLevel++;
                 //   wordCount = 0;
                 // }
-                pushMessage(fChannelAccessToken, id, quest);
+                // pushMessage(fChannelAccessToken, id, quest);
                 // mDao.setGameWord(
                 //     new GameWord(id, quest, answer, ++wordCount, gameLevel, currentTimeMillis(), 0));
               }

@@ -160,15 +160,19 @@ public class LineBotController {
             if (text.contains(KEY_STOP_GAME)) {
               GameStatus gameStatus = new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp);
               GameStatus status = fDao.getGameStatusById(aUserId);
-              if (status != null && status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-                fDao.updateGameStatus(gameStatus);
+              if (status != null) {
+                if (status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                  fDao.updateGameStatus(gameStatus);
+                  replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
+                  LOG.info("Start deleting GameWord...");
+                  fDao.deleteGameWord(aUserId);
+                  confirmStartGame(fChannelAccessToken, aUserId);
+                }else {
+                  replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
+                }
               } else {
                 fDao.setGameStatus(gameStatus);
               }
-              replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
-              LOG.info("Start deleting GameWord...");
-              fDao.deleteGameWord(aUserId);
-              confirmStartGame(fChannelAccessToken, aUserId);
             }
 
           }
