@@ -99,7 +99,7 @@ public class ScheduledTasks {
 
             if (wordCount > 0) {
               LOG.info("User not answering....");
-              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), false));
+              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), isAnswer));
             }
 
           }
