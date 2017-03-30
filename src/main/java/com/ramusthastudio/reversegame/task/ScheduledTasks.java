@@ -58,15 +58,17 @@ public class ScheduledTasks {
           String status = gameStatus.getStatus();
           int wordTrue = gameStatus.getWordTrue();
           int wordFalse = gameStatus.getWordFalse();
+          long lastTime = gameStatus.getLastTime();
           boolean isAnswer = gameStatus.isAnswer();
 
-          if (wordFalse > 2) {
+          if (wordFalse > 3) {
             pushMessage(fChannelAccessToken, userId, "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
             stickerMessage(fChannelAccessToken, userId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
             confirmStartGame(fChannelAccessToken, userId);
 
             LOG.info("Game over....");
             fDao.updateGameStatus(new GameStatus(userId, KEY_STOP_GAME));
+            // fDao.updateGameLeaderboard();
           } else {
             GameWord gameWord = fDao.getGameWordById(userId);
             int wordCount = gameWord.getWordCount();
@@ -87,10 +89,10 @@ public class ScheduledTasks {
               answer = getRandomMedium();
               quest = new StringBuffer(answer).reverse().toString();
               maxLevel = 20;
-            } else if (gameLevel == 3) {
+            } else if (gameLevel >= 3) {
               answer = getRandomLarge();
               quest = new StringBuffer(answer).reverse().toString();
-              maxLevel = 50;
+              maxLevel = 100;
             }
 
             LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
@@ -98,7 +100,7 @@ public class ScheduledTasks {
             fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
             if (!isAnswer) { wordFalse++; }
-            fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, currentTimeMillis(), false));
+            fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, lastTime, false));
           }
         }
       }

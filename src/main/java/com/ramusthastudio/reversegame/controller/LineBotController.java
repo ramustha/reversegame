@@ -14,6 +14,7 @@ import com.ramusthastudio.reversegame.model.Postback;
 import com.ramusthastudio.reversegame.model.Source;
 import com.ramusthastudio.reversegame.model.UserChat;
 import com.ramusthastudio.reversegame.model.UserLine;
+import com.ramusthastudio.reversegame.util.StickerHelper;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,9 @@ import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessageGroup
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
+import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
+import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_USELESS;
 
 @RestController
 @RequestMapping(value = "/linebot")
@@ -144,6 +147,16 @@ public class LineBotController {
       GameLeaderboard gameLeaderboardDb = fDao.getGameLeaderboardById(profile.getUserId());
       LOG.info("End setup database...");
 
+      if (gameStatusDb != null && gameStatusDb.getWordFalse() > 3) {
+        pushMessage(fChannelAccessToken, aUserId, "Game over...\nKamu salah menebak sebanyak " + gameStatusDb.getWordFalse() + " kali");
+        stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
+        confirmStartGame(fChannelAccessToken, aUserId);
+
+        LOG.info("Game over....");
+        fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
+        // fDao.updateGameLeaderboard();
+      }
+
       switch (aEventType) {
         case UNFOLLOW:
           unfollowMessage(fChannelAccessToken, aUserId);
@@ -181,7 +194,7 @@ public class LineBotController {
           String text = aMessage.text();
           if (type.equals(MESSAGE_TEXT)) {
             if (text.contains(KEY_STOP_GAME)) {
-              if (gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+              if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
                 confirmStartGame(fChannelAccessToken, aUserId);
 
@@ -192,8 +205,12 @@ public class LineBotController {
               } else {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
               }
+            } else if (text.contains(KEY_LEADERBOARD)) {
+              replayMessage(fChannelAccessToken, aReplayToken, text);
+            } else if (text.contains(KEY_HELP)) {
+              instructionMessage(fChannelAccessToken, aUserId);
             } else {
-              if (gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+              if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
                 LOG.info("User answer..." + text);
                 GameWord gameWord = fDao.getGameWordById(aUserId);
                 String answer = gameWord.getWordAnswer().trim();
@@ -203,6 +220,9 @@ public class LineBotController {
                 if (answer.equalsIgnoreCase(userAnswer)) {
                   correct++;
                   LOG.info("Correct answer..." + answer);
+
+                  long answerTimes = aTimestamp - gameWord.getStartQuest();
+                  LOG.info("answerTimes is : " + answerTimes);
                 } else {
                   incorrect++;
                   LOG.info("Incorrect answer..." + answer);
@@ -238,9 +258,8 @@ public class LineBotController {
 
           }
 
-          LOG.info("isValidMessage...");
           LOG.info("Start UserChat history...");
-          fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+          fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp, userChatDb.getFalseCount()));
           break;
         case POSTBACK:
           String pd = aPostback.data();
