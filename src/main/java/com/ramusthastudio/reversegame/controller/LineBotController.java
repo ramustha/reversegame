@@ -53,6 +53,7 @@ import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
 import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_USELESS;
+import static java.lang.System.currentTimeMillis;
 
 @RestController
 @RequestMapping(value = "/linebot")
@@ -154,7 +155,18 @@ public class LineBotController {
 
         LOG.info("Game over....");
         fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
-        // fDao.updateGameLeaderboard();
+
+        LOG.info("Update Leaderboard");
+        GameLeaderboard lb = fDao.getGameLeaderboardById(aUserId);
+        String username = lb.getUsername();
+        int bestScore = lb.getBestScore() > gameStatusDb.getWordTrue() ? lb.getBestScore() : gameStatusDb.getWordTrue();
+        int bestTime = (int) (currentTimeMillis() - gameStatusDb.getLastTime());
+        int bestAnswerTime = lb.getBestAnswerTime() < bestTime ? lb.getBestAnswerTime() : bestTime;
+        fDao.updateGameLeaderboard(new GameLeaderboard(
+            aUserId,
+            username,
+            bestScore,
+            bestAnswerTime, 0));
       }
 
       switch (aEventType) {
@@ -271,7 +283,14 @@ public class LineBotController {
 
             replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
           } else if (pd.contains(KEY_LEADERBOARD)) {
-            replayMessage(fChannelAccessToken, aReplayToken, pd);
+            StringBuilder builder1 = new StringBuilder("Peringkat...\n\n");
+            for (GameLeaderboard gameLeaderboard : fDao.getAllGameLeaderboard()) {
+              builder1
+                  .append("\n").append("User: ").append(gameLeaderboard.getUsername())
+                  .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore())
+                  .append("\n").append("Best Time: ").append(gameLeaderboard.getBestAnswerTime());
+            }
+            replayMessage(fChannelAccessToken, aReplayToken, builder1.toString());
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
           }

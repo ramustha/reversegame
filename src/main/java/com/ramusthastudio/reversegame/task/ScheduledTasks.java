@@ -1,6 +1,7 @@
 package com.ramusthastudio.reversegame.task;
 
 import com.ramusthastudio.reversegame.database.Dao;
+import com.ramusthastudio.reversegame.model.GameLeaderboard;
 import com.ramusthastudio.reversegame.model.GameStatus;
 import com.ramusthastudio.reversegame.model.GameWord;
 import com.ramusthastudio.reversegame.model.UserChat;
@@ -68,7 +69,18 @@ public class ScheduledTasks {
 
             LOG.info("Game over....");
             fDao.updateGameStatus(new GameStatus(userId, KEY_STOP_GAME));
-            // fDao.updateGameLeaderboard();
+
+            LOG.info("Update Leaderboard");
+            GameLeaderboard lb = fDao.getGameLeaderboardById(userId);
+            String username = lb.getUsername();
+            int bestScore = lb.getBestScore() > wordTrue ? lb.getBestScore() : wordTrue;
+            int bestTime = (int) (currentTimeMillis() - lastTime);
+            int bestAnswerTime = lb.getBestAnswerTime() < bestTime ? lb.getBestAnswerTime() : bestTime;
+            fDao.updateGameLeaderboard(new GameLeaderboard(
+                userId,
+                username,
+                bestScore,
+                bestAnswerTime, 0));
           } else {
             GameWord gameWord = fDao.getGameWordById(userId);
             int wordCount = gameWord.getWordCount();
