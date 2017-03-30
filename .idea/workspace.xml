@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3575590f-db3b-4bfb-add2-0f36cac24155" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="3575590f-db3b-4bfb-add2-0f36cac24155" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -111,11 +109,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="DaoImpl.java" pinned="false" current-in-tab="true">
+          <file leaf-file-name="DaoImpl.java" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="227">
-                  <caret line="35" column="77" lean-forward="true" selection-start-line="35" selection-start-column="77" selection-end-line="35" selection-end-column="77" />
+                <state relative-caret-position="142">
+                  <caret line="30" column="79" lean-forward="true" selection-start-line="30" selection-start-column="79" selection-end-line="30" selection-end-column="79" />
                   <folding>
                     <marker date="1490871151357" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
                     <marker date="1490871151357" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
@@ -154,11 +152,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="ScheduledTasks.java" pinned="false" current-in-tab="false">
+          <file leaf-file-name="ScheduledTasks.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="288">
-                  <caret line="94" column="40" lean-forward="false" selection-start-line="94" selection-start-column="40" selection-end-line="94" selection-end-column="40" />
+                <state relative-caret-position="306">
+                  <caret line="92" column="27" lean-forward="false" selection-start-line="92" selection-start-column="27" selection-end-line="92" selection-end-column="27" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -244,9 +242,9 @@
       <find>fDao</find>
       <find>GameWord</find>
       <find>SQL_DELETE_GAME_WORD</find>
-      <find>GAME_STATUS</find>
-      <find>GameStatus</find>
       <find>fDao.set</find>
+      <find>GameStatus</find>
+      <find>GAME_STATUS</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -1413,12 +1411,12 @@
       <workItem from="1490795845129" duration="371000" />
       <workItem from="1490796277498" duration="3213000" />
       <workItem from="1490838120091" duration="37000" />
-      <workItem from="1490838164416" duration="31906000" />
+      <workItem from="1490838164416" duration="32165000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35527000" />
+    <option name="totallyTimeSpent" value="35786000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1620" height="920" extended-state="0" />
@@ -1902,16 +1900,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="94" column="40" lean-forward="false" selection-start-line="94" selection-start-column="40" selection-end-line="94" selection-end-column="40" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="223">
@@ -1924,8 +1912,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="35" column="77" lean-forward="true" selection-start-line="35" selection-start-column="77" selection-end-line="35" selection-end-column="77" />
+        <state relative-caret-position="142">
+          <caret line="30" column="79" lean-forward="true" selection-start-line="30" selection-start-column="79" selection-end-line="30" selection-end-column="79" />
           <folding>
             <marker date="1490871151357" expanded="true" signature="882:905" ph="SELECT * FRO... user_line" />
             <marker date="1490871151357" expanded="true" signature="992:1022" ph="SELECT * FRO... user_line" />
@@ -1949,6 +1937,16 @@
             <marker date="1490871151357" expanded="true" signature="3119:3149" ph="SELECT * FRO... game_leaderboard" />
             <marker date="1490871151357" expanded="true" signature="3215:3332" ph="INSERT INTO game_leaderboard... " />
             <marker date="1490871151357" expanded="true" signature="3397:3522" ph="UPDATE game_... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="92" column="27" lean-forward="false" selection-start-line="92" selection-start-column="27" selection-end-line="92" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
