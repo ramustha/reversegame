@@ -7,6 +7,11 @@ public class GameLeaderboard {
   private int bestAnswerTime;
   private int averageAnswerTime;
 
+  public GameLeaderboard(String aId, String aUsername) {
+    id = aId;
+    username = aUsername;
+  }
+
   public GameLeaderboard(String aId, String aUsername, int aBestScore, int aBestAnswerTime, int aAverageAnswerTime) {
     id = aId;
     username = aUsername;

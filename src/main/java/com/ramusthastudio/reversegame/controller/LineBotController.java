@@ -5,6 +5,7 @@ import com.linecorp.bot.client.LineSignatureValidator;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.ramusthastudio.reversegame.database.Dao;
 import com.ramusthastudio.reversegame.model.Events;
+import com.ramusthastudio.reversegame.model.GameLeaderboard;
 import com.ramusthastudio.reversegame.model.GameStatus;
 import com.ramusthastudio.reversegame.model.GameWord;
 import com.ramusthastudio.reversegame.model.Message;
@@ -132,17 +133,15 @@ public class LineBotController {
 
   private void sourceUserProccess(String aEventType, String aReplayToken, long aTimestamp, Message aMessage, Postback aPostback, String aUserId) {
     try {
-      LOG.info("Start find UserLine on database...");
+      LOG.info("Start setup database...");
       UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
-      UserLine mUserLine = fDao.getUserLineById(profile.getUserId());
-      if (mUserLine == null) {
-        LOG.info("Start save UserLine to database...");
-        fDao.setUserLine(profile);
-      }
-      LOG.info("End find UserLine on database..." + mUserLine);
-    } catch (IOException ignored) {}
+      UserLine userLineDb = fDao.getUserLineById(profile.getUserId());
+      UserChat userChatDb = fDao.getUserChatById(profile.getUserId());
+      GameStatus gameStatusDb = fDao.getGameStatusById(profile.getUserId());
+      GameWord gameWordDb = fDao.getGameWordById(profile.getUserId());
+      GameLeaderboard gameLeaderboardDb = fDao.getGameLeaderboardById(profile.getUserId());
+      LOG.info("End setup database...");
 
-    try {
       switch (aEventType) {
         case UNFOLLOW:
           unfollowMessage(fChannelAccessToken, aUserId);
@@ -152,46 +151,59 @@ public class LineBotController {
           greetingMessage(fChannelAccessToken, aUserId);
           instructionMessage(fChannelAccessToken, aUserId);
           confirmStartGame(fChannelAccessToken, aUserId);
+
+          if (userLineDb == null) {
+            LOG.info("Start save userLineDb to database...");
+            fDao.setUserLine(profile);
+          }
+          if (userChatDb == null) {
+            LOG.info("Start save userChatDb to database...");
+            fDao.setUserChat(new UserChat(aUserId, "Greeting Message", aTimestamp));
+          }
+          if (gameStatusDb == null) {
+            LOG.info("Start save gameStatusDb to database...");
+            fDao.setGameStatus(new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp));
+          }
+          if (gameWordDb == null) {
+            LOG.info("Start save gameStatusDb to database...");
+            fDao.setGameWord(new GameWord(aUserId, 0, 0));
+          }
+          if (gameLeaderboardDb == null) {
+            LOG.info("Start save gameLeaderboardDb to database...");
+            fDao.setGameLeaderboard(new GameLeaderboard(aUserId, profile.getDisplayName()));
+          }
+
           break;
         case MESSAGE:
           String type = aMessage.type();
           String text = aMessage.text();
           if (type.equals(MESSAGE_TEXT)) {
             if (text.contains(KEY_STOP_GAME)) {
-              GameStatus gameStatus = new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp);
-              GameStatus status = fDao.getGameStatusById(aUserId);
-              if (status != null) {
-                if (status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-                  replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
-                  confirmStartGame(fChannelAccessToken, aUserId);
+              if (gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
+                confirmStartGame(fChannelAccessToken, aUserId);
 
-                  LOG.info("Start update GameStatus...");
-                  fDao.updateGameStatus(gameStatus);
-                  LOG.info("Start deleting GameWord...");
-                  fDao.deleteGameWord(aUserId);
-                } else {
-                  replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
-                }
+                LOG.info("Start update GameStatus...");
+                fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp));
+                LOG.info("Start update GameWord...");
+                fDao.updateGameWord(new GameWord(aUserId, "", "", 0, 0, 0, 0));
               } else {
-                fDao.setGameStatus(gameStatus);
+                replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
               }
             } else {
-              GameStatus status = fDao.getGameStatusById(aUserId);
-              if (status != null) {
-                if (status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-                  LOG.info("User answer..." + text);
-                  GameWord gameWord = fDao.getGameWordById(aUserId);
-                  String answer = gameWord.getWordAnswer().trim();
-                  String userAnswer = text.trim();
-                  int correct = status.getWordTrue();
-                  int incorrect = status.getWordFalse();
-                  if (answer.equalsIgnoreCase(userAnswer)) {
-                    LOG.info("Correct answer..." + answer);
-                    fDao.setGameStatus(new GameStatus(aUserId, ++correct, incorrect, aTimestamp));
-                  }else {
-                    LOG.info("Incorrect answer..." + answer);
-                    fDao.setGameStatus(new GameStatus(aUserId, correct, ++incorrect, aTimestamp));
-                  }
+              if (gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                LOG.info("User answer..." + text);
+                GameWord gameWord = fDao.getGameWordById(aUserId);
+                String answer = gameWord.getWordAnswer().trim();
+                String userAnswer = text.trim();
+                int correct = gameStatusDb.getWordTrue();
+                int incorrect = gameStatusDb.getWordFalse();
+                if (answer.equalsIgnoreCase(userAnswer)) {
+                  LOG.info("Correct answer..." + answer);
+                  fDao.updateGameStatus(new GameStatus(aUserId, ++correct, incorrect, aTimestamp));
+                } else {
+                  LOG.info("Incorrect answer..." + answer);
+                  fDao.updateGameStatus(new GameStatus(aUserId, correct, ++incorrect, aTimestamp));
                 }
               }
             }
@@ -199,8 +211,8 @@ public class LineBotController {
           }
 
           // LOG.info("isValidMessage...");
-          // UserChat userChat = fDao.getUserChatById(aUserId);
-          // if (userChat != null) {
+          // UserChat userChatDb = fDao.getUserChatById(aUserId);
+          // if (userChatDb != null) {
           //   LOG.info("Start UserChat history...");
           //   fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
           // } else {
