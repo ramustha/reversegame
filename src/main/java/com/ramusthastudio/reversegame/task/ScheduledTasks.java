@@ -39,7 +39,7 @@ public class ScheduledTasks {
   @Autowired
   Dao mDao;
 
-  @Scheduled(fixedRate = 5000)
+  @Scheduled(fixedRate = 10000)
   public void StartingGame() throws IOException {
     List<GameStatus> gameStatuses = mDao.getAllGameStatus();
     if (gameStatuses != null) {
@@ -60,7 +60,7 @@ public class ScheduledTasks {
           } else {
             wordCount++;
           }
-          mDao.setGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
+          mDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
         }
       }
