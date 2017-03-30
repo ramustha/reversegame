@@ -41,11 +41,13 @@ import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_GROUP;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_ROOM;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_USER;
 import static com.ramusthastudio.reversegame.util.BotHelper.UNFOLLOW;
+import static com.ramusthastudio.reversegame.util.BotHelper.confirmHelpGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.confirmStartGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.getUserProfile;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessageGroup;
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
+import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
 
@@ -206,6 +208,31 @@ public class LineBotController {
                   LOG.info("Incorrect answer..." + answer);
                 }
                 fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
+              } else {
+                String def;
+                int invalidChat = userChatDb.getFalseCount();
+                if (invalidChat == 0) {
+                  def = "Game nya belum dimulai kamu udah tulis aja nih";
+                  invalidChat++;
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                } else if (invalidChat == 1) {
+                  def = "hmm..aku gak ngerti kalau kamu tulis sembarangan kata";
+                  invalidChat++;
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                  confirmHelpGame(fChannelAccessToken, aUserId);
+                } else if (invalidChat == 2) {
+                  def = "Kalau kamu mau lihat peringkat, kamu tinggal tulis 'Peringkat'";
+                  invalidChat++;
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                } else {
+                  def = "Aku marah nih kalau kamu belum mulai gamenya";
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, 0));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                  confirmHelpGame(fChannelAccessToken, aUserId);
+                }
               }
             }
 
