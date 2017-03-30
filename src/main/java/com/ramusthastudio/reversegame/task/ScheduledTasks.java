@@ -54,7 +54,7 @@ public class ScheduledTasks {
           String answer = getRandomSmall();
           String quest = new StringBuffer(answer).reverse().toString();
           LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
-          LOG.info("User Id : {} Replay time : {}", fId, fReplayTime);
+          LOG.info("User Id : {} Replay time : {}", fId, new Timestamp(fReplayTime));
 
           // List<GameWord> gameWords = mDao.getAllGameWord();
           // if (gameWords != null && gameWords.size() > 0) {
