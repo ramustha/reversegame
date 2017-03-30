@@ -205,7 +205,7 @@ public class LineBotController {
                   incorrect++;
                   LOG.info("Incorrect answer..." + answer);
                 }
-                fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, ++incorrect, aTimestamp, true));
+                fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
               }
             }
 
