@@ -46,6 +46,10 @@ public final class BotHelper {
   public static final String MESSAGE_LOCATION = "location";
   public static final String MESSAGE_STICKER = "sticker";
 
+  public static final String KEY_START_GAME = "start";
+  public static final String KEY_LEADERBOARD = "leaderboard";
+  public static final String KEY_HELP = "help";
+
   public static UserProfileResponse getUserProfile(String aChannelAccessToken,
       String aUserId) throws IOException {
     LOG.info("getUserProfile...");
@@ -104,25 +108,11 @@ public final class BotHelper {
         .build().pushMessage(pushMessage).execute();
   }
 
-  public static void talkMessageGroup(String aChannelAccessToken, String aUserId) throws IOException {
-    String greeting = "Hi\n";
-    greeting += "Kenalin, aku AMA bot yang bisa membaca sentiment lewat twitter, ";
-    greeting += "sentiment atau pendapat orang tentang apapun di dalam dunia twitter, ";
-    greeting += "selain sentiment aku juga bisa baca personality nya lho.\n\n";
-    greeting += "Personality menggambarkan karakter seseorang dari sebuah tulisan atau pun sosial media, ";
-    greeting += "saat ini aku hanya bisa membaca karakter seseorang lewat tweets ataupun tulisan dalam sebuah file.";
-    stickerMessage(aChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_TWO_THUMBS));
-    pushMessage(aChannelAccessToken, aUserId, greeting);
-  }
-
   public static void greetingMessageGroup(String aChannelAccessToken, String aUserId) throws IOException {
     String greeting = "Hi manteman\n";
     greeting += "Makasih aku udah di invite disini!\n";
-    greeting += "sentiment atau pendapat orang tentang apapun di dalam dunia twitter, ";
-    greeting += "selain sentiment aku juga bisa baca personality nya lho.\n\n";
-    greeting += "Personality menggambarkan karakter seseorang dari sebuah tulisan atau pun sosial media, ";
-    greeting += "saat ini aku hanya bisa membaca karakter seseorang lewat tweets ataupun tulisan dalam sebuah file.\n\n";
-    greeting += "Bantuin aku donk supaya punya banyak teman, ini id aku @ape3119w";
+    greeting += "Biar lebih seru ajak donk teman teman lain ke sini supaya lebih seru.\n";
+    greeting += "Ini id aku @gdo0972e";
     stickerMessage(aChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_TWO_THUMBS));
     pushMessage(aChannelAccessToken, aUserId, greeting);
   }
@@ -131,46 +121,39 @@ public final class BotHelper {
     UserProfileResponse userProfile = getUserProfile(aChannelAccessToken, aUserId);
     String greeting = "Hi " + userProfile.getDisplayName() + "\n";
     greeting += "Makasih udah nambahin aku sebagai teman!\n";
-    greeting += "Kenalin, aku AMA bot yang bisa membaca sentiment lewat twitter, ";
-    greeting += "sentiment atau pendapat orang tentang apapun di dalam dunia twitter, ";
-    greeting += "selain sentiment aku juga bisa baca personality nya lho.\n\n";
-    greeting += "Personality menggambarkan karakter seseorang dari sebuah tulisan atau pun sosial media, ";
-    greeting += "saat ini aku hanya bisa membaca karakter seseorang lewat tweets ataupun tulisan dalam sebuah file.\n\n";
-    greeting += "Bantuin aku donk supaya punya banyak teman, ini id aku @ape3119w";
+    greeting += "Aku punya game simple nih buat kamu, biar lebih seru ajak donk teman teman kamu buat add aku sebagai teman.\n";
+    greeting += "Ini id aku @gdo0972e";
     stickerMessage(aChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_TWO_THUMBS));
+    pushMessage(aChannelAccessToken, aUserId, greeting);
+  }
+
+  public static void instructionMessage(String aChannelAccessToken, String aUserId) throws IOException {
+    UserProfileResponse userProfile = getUserProfile(aChannelAccessToken, aUserId);
+    String greeting = "Hi " + userProfile.getDisplayName() + "\n";
+    greeting += "Aturannya simple kok, kamu tinggal jawab terbalik kata yang aku kasi ke kamu\n";
+    greeting += "Contoh kata '" + reverseString("memalukan") + "' kamu jawab 'memalukan'";
     pushMessage(aChannelAccessToken, aUserId, greeting);
   }
 
   public static void unfollowMessage(String aChannelAccessToken, String aUserId) throws IOException {
     UserProfileResponse userProfile = getUserProfile(aChannelAccessToken, aUserId);
     String greeting = "Hi " + userProfile.getDisplayName() + "\n";
-    greeting += "Kenapa kamu unfollow aku? jahat !!!";
+    greeting += "Udah bosen sama aku ?";
     pushMessage(aChannelAccessToken, aUserId, greeting);
   }
 
-  public static void instructionSentimentMessage(String aChannelAccessToken, String aUserId) throws IOException {
-    String greeting = "Contoh kalau kamu pengen tau nih pendapat orang lain tentang indonesia, ";
-    greeting += "Kamu tinggal tulis sentiment 'indonesia', ";
-    greeting += "kalau pengen tau tentang karakter seseorang tulis personality 'jokowi' atau ";
-    greeting += "summary 'jokowi' buat tau pribadi 'jokowi' lebih dalam seperti apa yang 'jokowi' suka dan gak suka, ";
-    greeting += "nanti aku kumpulin infonya terus aku kasih tau ke kamu.\n\n";
-    greeting += "Kalau kamu pengen tau tentang karakter seseorang dari tulisan seseorang kamu tinggal kirim file tulisanya ke sini.\n\n";
-    greeting += "Saat ini aku cuma bisa baca tulisan pake bahasa inggris aja, untuk bahasa lain aku belum bisa.";
-    pushMessage(aChannelAccessToken, aUserId, greeting);
+  public static Response<BotApiResponse> confirmStartGame(String aChannelAccessToken, String aUserId) throws IOException {
+    ConfirmTemplate template = new ConfirmTemplate("Mulai permainan ?", Arrays.asList(
+        new PostbackAction("Mulai", KEY_START_GAME),
+        new PostbackAction("Peringkat", KEY_LEADERBOARD)
+    ));
+    return templateMessage(aChannelAccessToken, aUserId, template);
   }
 
-  public static void instructionTweetsMessage(String aChannelAccessToken, String aUserId) throws IOException {
-    UserProfileResponse userProfile = getUserProfile(aChannelAccessToken, aUserId);
-    String greeting = "Hi " + userProfile.getDisplayName() + "\n";
-    greeting += "Aku juga bisa nih lihat profile twitter orang, kamu tinggal tulis aja id twitternya\n";
-    greeting += "Contoh twitter 'dicoding'";
-    pushMessage(aChannelAccessToken, aUserId, greeting);
-  }
-
-  public static Response<BotApiResponse> confirmTwitterMessage(String aChannelAccessToken, String aUserId, String aMsg, String aDataYes, String aDataNo) throws IOException {
-    ConfirmTemplate template = new ConfirmTemplate(aMsg, Arrays.asList(
-        new PostbackAction("Bener", aDataYes),
-        new PostbackAction("Salah", aDataNo)
+  public static Response<BotApiResponse> confirmHelpGame(String aChannelAccessToken, String aUserId) throws IOException {
+    ConfirmTemplate template = new ConfirmTemplate("Mulai permainan ?", Arrays.asList(
+        new PostbackAction("Mulai", KEY_START_GAME),
+        new PostbackAction("Bantuan", KEY_HELP)
     ));
     return templateMessage(aChannelAccessToken, aUserId, template);
   }
@@ -204,5 +187,9 @@ public final class BotHelper {
     Pattern pattern = Pattern.compile("[^a-z A-Z^0-9]");
     Matcher matcher = pattern.matcher(s);
     return matcher.replaceAll(" ");
+  }
+
+  public static String reverseString(String aString) {
+    return String.valueOf(new StringBuffer(aString).reverse());
   }
 }

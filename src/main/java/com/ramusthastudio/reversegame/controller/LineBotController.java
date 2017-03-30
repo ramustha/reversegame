@@ -33,9 +33,11 @@ import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_GROUP;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_ROOM;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_USER;
 import static com.ramusthastudio.reversegame.util.BotHelper.UNFOLLOW;
+import static com.ramusthastudio.reversegame.util.BotHelper.confirmStartGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.getUserProfile;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessageGroup;
+import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionSentimentMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
@@ -122,16 +124,16 @@ public class LineBotController {
   }
 
   private void sourceUserProccess(String aEventType, String aReplayToken, long aTimestamp, Message aMessage, Postback aPostback, String aUserId) {
-    // try {
-    //   LOG.info("Start find UserProfileResponse on database...");
-    //   UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
-    //   UserLine mUserLine = fDao.getUserLineById(profile.getUserId());
-    //   if (mUserLine == null) {
-    //     LOG.info("Start save user line to database...");
-    //     fDao.setUserLine(profile);
-    //   }
-    //   LOG.info("End find UserProfileResponse on database..." + mUserLine);
-    // } catch (IOException ignored) {}
+    try {
+      LOG.info("Start find UserProfileResponse on database...");
+      UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
+      UserLine mUserLine = fDao.getUserLineById(profile.getUserId());
+      if (mUserLine == null) {
+        LOG.info("Start save user line to database...");
+        fDao.setUserLine(profile);
+      }
+      LOG.info("End find UserProfileResponse on database..." + mUserLine);
+    } catch (IOException ignored) {}
 
     try {
       switch (aEventType) {
@@ -141,7 +143,8 @@ public class LineBotController {
         case FOLLOW:
           LOG.info("Greeting Message");
           greetingMessage(fChannelAccessToken, aUserId);
-          instructionSentimentMessage(fChannelAccessToken, aUserId);
+          instructionMessage(fChannelAccessToken, aUserId);
+          confirmStartGame(fChannelAccessToken, aUserId);
           break;
         case MESSAGE:
           if (aMessage.type().equals(MESSAGE_TEXT)) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="reversegamedb" uuid="3592b68b-90cb-49d4-9d81-e4285eafe70b">
+      <database-info product="PostgreSQL" version="9.6.1" jdbc-version="4.0" driver-name="PostgreSQL Native Driver" driver-version="PostgreSQL 9.4 JDBC4 (build 1201)">
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
+      <secret-storage>memory</secret-storage>
+      <user-name>liryawhbwjrfwn</user-name>
+      <resolve-scope>d31j509fh26kte:public,liryawhbwjrfwn</resolve-scope>
+    </data-source>
+  </component>
+</project>
