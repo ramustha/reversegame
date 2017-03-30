@@ -158,17 +158,19 @@ public class LineBotController {
           String text = aMessage.text();
           if (type.equals(MESSAGE_TEXT)) {
             setUserReplay(aUserId, aTimestamp);
-            replayMessage(fChannelAccessToken, aReplayToken, text);
-          } else if (type.contains(KEY_STOP_GAME)) {
-            GameStatus gameStatus = new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp);
-            GameStatus status = fDao.getGameStatusById(aUserId);
-            if (status != null && status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-              fDao.updateGameStatus(gameStatus);
-            } else {
-              fDao.setGameStatus(gameStatus);
+
+            if (text.contains(KEY_STOP_GAME)) {
+              GameStatus gameStatus = new GameStatus(aUserId, KEY_STOP_GAME, aTimestamp);
+              GameStatus status = fDao.getGameStatusById(aUserId);
+              if (status != null && status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                fDao.updateGameStatus(gameStatus);
+              } else {
+                fDao.setGameStatus(gameStatus);
+              }
+              replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti");
+              confirmStartGame(fChannelAccessToken, aUserId);
             }
-            replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti");
-            confirmStartGame(fChannelAccessToken, aUserId);
+
           }
 
           LOG.info("isValidMessage...");
