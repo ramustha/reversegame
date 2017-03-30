@@ -39,7 +39,7 @@ public class ScheduledTasks {
   @Autowired
   Dao mDao;
 
-  @Scheduled(fixedRate = 5000)
+  @Scheduled(fixedRate = 10000)
   public void StartingGame() throws IOException {
     List<GameStatus> gameStatuses = mDao.getAllGameStatus();
     if (gameStatuses != null && gameStatuses.size() > 0) {
@@ -52,17 +52,17 @@ public class ScheduledTasks {
               if (id.equalsIgnoreCase(gameStatus.getId())) {
                 String answer = getRandomSmall();
                 String quest = new StringBuffer(answer).reverse().toString();
-                LOG.info("StartingGame.... Quest : {} Answer : {}", quest, answer);
+                LOG.info("StartingGame.... Quest : {} Answer : {} time {} ", quest, answer, new Timestamp(currentTimeMillis()));
 
-                int wordCount = gameWord.getWordCount();
-                int gameLevel = gameWord.getGameLevel();
-                if (wordCount == 10) {
-                  gameLevel++;
-                  wordCount = 0;
-                }
+                // int wordCount = gameWord.getWordCount();
+                // int gameLevel = gameWord.getGameLevel();
+                // if (wordCount == 10) {
+                //   gameLevel++;
+                //   wordCount = 0;
+                // }
                 pushMessage(fChannelAccessToken, id, quest);
-                mDao.setGameWord(
-                    new GameWord(id, quest, answer, ++wordCount, gameLevel, currentTimeMillis(), 0));
+                // mDao.setGameWord(
+                //     new GameWord(id, quest, answer, ++wordCount, gameLevel, currentTimeMillis(), 0));
               }
             }
           }
