@@ -197,7 +197,7 @@ public class LineBotController {
           }
           if (gameLeaderboardDb == null) {
             LOG.info("Start save gameLeaderboardDb to database...");
-            fDao.setGameLeaderboard(new GameLeaderboard(aUserId, profile.getDisplayName()));
+            fDao.setGameLeaderboard(new GameLeaderboard(aUserId, profile.getDisplayName(), 10000));
           }
 
           break;
