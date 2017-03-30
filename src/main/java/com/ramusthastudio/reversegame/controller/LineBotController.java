@@ -164,9 +164,10 @@ public class LineBotController {
                 if (status.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
                   fDao.updateGameStatus(gameStatus);
                   replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
+                  confirmStartGame(fChannelAccessToken, aUserId);
+
                   LOG.info("Start deleting GameWord...");
                   fDao.deleteGameWord(aUserId);
-                  confirmStartGame(fChannelAccessToken, aUserId);
                 }else {
                   replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
                 }
@@ -200,7 +201,7 @@ public class LineBotController {
             replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
 
             LOG.info("Start saving GameWord...");
-            fDao.setGameWord(new GameWord(aUserId, 0, 0));
+            fDao.setGameWord(new GameWord(aUserId, 0, 1));
 
           } else if (pd.contains(KEY_LEADERBOARD)) {
             replayMessage(fChannelAccessToken, aReplayToken, pd);

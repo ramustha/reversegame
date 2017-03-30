@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_START_GAME;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
+import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomLarge;
+import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomMedium;
 import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomSmall;
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
@@ -39,27 +41,40 @@ public class ScheduledTasks {
   @Autowired
   Dao mDao;
 
-  @Scheduled(fixedRate = 10000)
+  @Scheduled(fixedRate = 8000)
   public void StartingGame() throws IOException {
     List<GameStatus> gameStatuses = mDao.getAllGameStatus();
     if (gameStatuses != null) {
       for (GameStatus gameStatus : gameStatuses) {
         if (gameStatus.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
           String userId = gameStatus.getId();
-          String answer = getRandomSmall();
-          String quest = new StringBuffer(answer).reverse().toString();
-          LOG.info("StartingGame.... Quest : {} Answer : {} time {} ", quest, answer, new Timestamp(currentTimeMillis()));
-          pushMessage(fChannelAccessToken, gameStatus.getId(), quest);
 
           GameWord gameWord = mDao.getGameWordById(userId);
           int wordCount = gameWord.getWordCount();
           int gameLevel = gameWord.getGameLevel();
-          if (wordCount == 10) {
+          if (wordCount == 20) {
             gameLevel++;
             wordCount = 0;
           } else {
             wordCount++;
           }
+
+          String answer = getRandomSmall();
+          String quest = new StringBuffer(answer).reverse().toString();
+          if (gameLevel == 1) {
+            answer = getRandomSmall();
+            quest = new StringBuffer(answer).reverse().toString();
+          }else if (gameLevel == 2) {
+            answer = getRandomMedium();
+            quest = new StringBuffer(answer).reverse().toString();
+          }else if (gameLevel == 3) {
+            answer = getRandomLarge();
+            quest = new StringBuffer(answer).reverse().toString();
+          }
+
+          LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
+          pushMessage(fChannelAccessToken, gameStatus.getId(), quest);
+
           mDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
         }
