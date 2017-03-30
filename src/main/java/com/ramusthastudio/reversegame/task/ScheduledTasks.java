@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_START_GAME;
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_STOP_GAME;
+import static com.ramusthastudio.reversegame.util.BotHelper.confirmStartGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
 import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_TWO_THUMBS;
@@ -58,11 +59,12 @@ public class ScheduledTasks {
           int wordFalse = gameStatus.getWordFalse();
 
           if (wordFalse == 3) {
-            pushMessage(fChannelAccessToken, gameStatus.getId(), "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
-            stickerMessage(fChannelAccessToken, gameStatus.getId(), new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
+            pushMessage(fChannelAccessToken, userId, "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
+            stickerMessage(fChannelAccessToken, userId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
+            confirmStartGame(fChannelAccessToken, userId);
 
             LOG.info("Game over....");
-            fDao.updateGameStatus(new GameStatus(gameStatus.getId(), KEY_STOP_GAME));
+            fDao.updateGameStatus(new GameStatus(userId, KEY_STOP_GAME));
           } else {
             GameWord gameWord = fDao.getGameWordById(userId);
             int wordCount = gameWord.getWordCount();
@@ -86,14 +88,13 @@ public class ScheduledTasks {
               answer = getRandomLarge();
               quest = new StringBuffer(answer).reverse().toString();
             }
-
-            LOG.info("User not answering....");
-            fDao.updateGameStatus(new GameStatus(gameStatus.getId(), status, wordTrue, ++wordFalse, currentTimeMillis()));
-
             LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
-            pushMessage(fChannelAccessToken, gameStatus.getId(), quest);
+            pushMessage(fChannelAccessToken, userId, quest);
 
             fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
+
+            LOG.info("User not answering....");
+            fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis()));
           }
         }
       }

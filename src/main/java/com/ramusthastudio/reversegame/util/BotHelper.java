@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import retrofit2.Response;
 
 import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_TWO_THUMBS;
+import static com.ramusthastudio.reversegame.util.WordsHelper.getRandomSmall;
 
 public final class BotHelper {
   private static final Logger LOG = LoggerFactory.getLogger(BotHelper.class);
@@ -130,9 +131,12 @@ public final class BotHelper {
 
   public static void instructionMessage(String aChannelAccessToken, String aUserId) throws IOException {
     UserProfileResponse userProfile = getUserProfile(aChannelAccessToken, aUserId);
+    String answer = getRandomSmall();
+    String quest = new StringBuffer(answer).reverse().toString();
+
     String greeting = "Hi " + userProfile.getDisplayName() + "\n";
     greeting += "Aturannya simple kok, kamu tinggal jawab terbalik kata yang aku kasi ke kamu\n";
-    greeting += "Contoh kata '" + reverseString("memalukan") + "' kamu jawab 'memalukan'";
+    greeting += "Contoh kata '" + quest + "' kamu jawab '" + answer + "'";
     pushMessage(aChannelAccessToken, aUserId, greeting);
   }
 
