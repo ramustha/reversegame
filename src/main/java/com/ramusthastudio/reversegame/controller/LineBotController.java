@@ -200,10 +200,10 @@ public class LineBotController {
                 int incorrect = gameStatusDb.getWordFalse();
                 if (answer.equalsIgnoreCase(userAnswer)) {
                   LOG.info("Correct answer..." + answer);
-                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME, ++correct, incorrect, aTimestamp));
+                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, ++correct, incorrect, aTimestamp));
                 } else {
                   LOG.info("Incorrect answer..." + answer);
-                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME, correct, ++incorrect, aTimestamp));
+                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, ++incorrect, aTimestamp));
                 }
               }
             }
