@@ -163,7 +163,7 @@ public class LineBotController {
               processLeaderboard(aReplayToken, aSource.groupId());
               confirmHelpGame(fChannelAccessToken, aSource.groupId());
             } else if (text.contains(KEY_HELP)) {
-              instructionMessage(fChannelAccessToken, aSource.groupId());
+              instructionMessageGroup(fChannelAccessToken, aSource.groupId());
               confirmStartGame(fChannelAccessToken, aSource.groupId());
             } else {
               processAnswerGroup(aTimestamp, aSource.groupId(), gameStatusDb, text);
@@ -360,7 +360,7 @@ public class LineBotController {
         LOG.info("answerTimes is : " + answerTimes);
         fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
         stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_CHEERS));
-        pushMessage(fChannelAccessToken, aUserId, "Selesai...bawah ane telat");
+        pushMessage(fChannelAccessToken, aUserId, "Selesai...bawah aku telat");
       }else {
         fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, 0, 0, aTimestamp, true));
       }
