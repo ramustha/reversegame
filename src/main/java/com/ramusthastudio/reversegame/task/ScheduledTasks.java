@@ -73,12 +73,14 @@ public class ScheduledTasks {
             LOG.info("Update Leaderboard");
             GameLeaderboard lb = fDao.getGameLeaderboardById(userId);
             String username = lb.getUsername();
+            String profileUrl = lb.getProfileUrl();
             int bestScore = lb.getBestScore() > wordTrue ? lb.getBestScore() : wordTrue;
             int bestTime = (int) (currentTimeMillis() - lastTime);
             int bestAnswerTime = lb.getBestAnswerTime() < bestTime ? lb.getBestAnswerTime() : bestTime;
             fDao.updateGameLeaderboard(new GameLeaderboard(
                 userId,
                 username,
+                profileUrl,
                 bestScore,
                 bestAnswerTime, 0));
           } else {

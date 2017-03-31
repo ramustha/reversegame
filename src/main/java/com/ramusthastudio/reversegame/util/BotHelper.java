@@ -124,14 +124,13 @@ public final class BotHelper {
   }
 
   public static Response<BotApiResponse> carouselMessage(String aChannelAccessToken,
-      List<GameLeaderboard> aGameLeaderboards, UserLine aUserLineDb, String aUserId) throws IOException {
-    List<CarouselColumn> carouselColumn = buildCarouselColumn(aGameLeaderboards, aUserLineDb);
+      List<GameLeaderboard> aGameLeaderboards, String aUserId) throws IOException {
+    List<CarouselColumn> carouselColumn = buildCarouselColumn(aGameLeaderboards);
     CarouselTemplate template = new CarouselTemplate(carouselColumn);
     return templateMessage(aChannelAccessToken, aUserId, template);
   }
 
-  public static List<CarouselColumn> buildCarouselColumn(List<GameLeaderboard> aGameLeaderboards,
-      UserLine aUserLineDb) {
+  public static List<CarouselColumn> buildCarouselColumn(List<GameLeaderboard> aGameLeaderboards) {
     int index = 0;
     List<CarouselColumn> carouselColumn = new ArrayList<>();
     for (GameLeaderboard leaderboard : aGameLeaderboards) {
@@ -147,7 +146,7 @@ public final class BotHelper {
       LOG.info("Result title {}\n desc {}\n poster {}\n", title, desc, poster);
 
       List<Action> buttons = Collections.singletonList(
-          new URIAction("Profile ", aUserLineDb.getPictureUrl()));
+          new URIAction("Profile ", leaderboard.getProfileUrl()));
       carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
     }
 
@@ -180,6 +179,14 @@ public final class BotHelper {
 
     String greeting = "Hi " + userProfile.getDisplayName() + "\n";
     greeting += "Aturannya simple kok, kamu tinggal jawab terbalik kata yang aku kasi ke kamu\n";
+    greeting += "Contoh kata '" + quest + "' kamu jawab '" + answer + "'";
+    pushMessage(aChannelAccessToken, aUserId, greeting);
+  }
+
+  public static void instructionMessageGroup(String aChannelAccessToken, String aUserId) throws IOException {
+    String answer = getRandomSmall();
+    String quest = new StringBuffer(answer).reverse().toString();
+    String greeting = "Aturannya simple kok, kamu tinggal jawab terbalik kata yang aku kasi ke kamu\n";
     greeting += "Contoh kata '" + quest + "' kamu jawab '" + answer + "'";
     pushMessage(aChannelAccessToken, aUserId, greeting);
   }

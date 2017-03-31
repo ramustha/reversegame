@@ -49,6 +49,7 @@ import static com.ramusthastudio.reversegame.util.BotHelper.getUserProfile;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessageGroup;
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
+import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessageGroup;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
@@ -102,7 +103,7 @@ public class LineBotController {
           sourceUserProccess(eventType, replayToken, timestamp, message, postback, userId);
           break;
         case SOURCE_GROUP:
-          // sourceGroupProccess(eventType, replayToken, postback, message, source);
+          sourceGroupProccess(eventType, replayToken, timestamp, postback, message, source);
           break;
         case SOURCE_ROOM:
           // sourceGroupProccess(eventType, replayToken, postback, message, source);
@@ -113,7 +114,7 @@ public class LineBotController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  private void sourceGroupProccess(String aEventType, String aReplayToken, Postback aPostback, Message aMessage, Source aSource) {
+  private void sourceGroupProccess(String aEventType, String aReplayToken, long aTimestamp, Postback aPostback, Message aMessage, Source aSource) {
     try {
       switch (aEventType) {
         case LEAVE:
@@ -121,6 +122,8 @@ public class LineBotController {
         case JOIN:
           LOG.info("Greeting Message join group");
           greetingMessageGroup(fChannelAccessToken, aSource.groupId());
+          instructionMessageGroup(fChannelAccessToken, aSource.groupId());
+          confirmStartGame(fChannelAccessToken, aSource.groupId());
           break;
         case MESSAGE:
           if (aMessage.type().equals(MESSAGE_TEXT)) {
@@ -129,7 +132,15 @@ public class LineBotController {
           break;
         case POSTBACK:
           String pd = aPostback.data();
-
+          // if (pd.contains(KEY_START_GAME)) {
+          //   processStartGame(aReplayToken, aTimestamp, aSource.groupId());
+          // } else if (pd.contains(KEY_LEADERBOARD)) {
+          //   processLeaderboard(aReplayToken, aSource.groupId(), userLineDb);
+          //   confirmHelpGame(fChannelAccessToken, aSource.groupId());
+          // } else if (pd.contains(KEY_HELP)) {
+          //   instructionMessage(fChannelAccessToken, aSource.groupId());
+          //   confirmStartGame(fChannelAccessToken, aSource.groupId());
+          // }
           break;
       }
     } catch (IOException aE) { LOG.error("Message {}", aE.getMessage()); }
@@ -139,7 +150,6 @@ public class LineBotController {
     try {
       LOG.info("Start setup database...");
       UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
-      LOG.info("End setup database..." + profile.getPictureUrl());
       UserLine userLineDb = fDao.getUserLineById(profile.getUserId());
       UserChat userChatDb = fDao.getUserChatById(profile.getUserId());
       GameStatus gameStatusDb = fDao.getGameStatusById(profile.getUserId());
@@ -196,7 +206,7 @@ public class LineBotController {
           }
           if (gameLeaderboardDb == null) {
             LOG.info("Start save gameLeaderboardDb to database...");
-            fDao.setGameLeaderboard(new GameLeaderboard(aUserId, profile.getDisplayName(), 10000));
+            fDao.setGameLeaderboard(new GameLeaderboard(aUserId, profile.getDisplayName(), profile.getPictureUrl(), 10000));
           }
 
           break;
@@ -220,7 +230,7 @@ public class LineBotController {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
               }
             } else if (text.contains(KEY_LEADERBOARD)) {
-              processLeaderboard(aReplayToken, aUserId, userLineDb);
+              processLeaderboard(aReplayToken, aUserId);
               confirmHelpGame(fChannelAccessToken, aUserId);
             } else if (text.contains(KEY_HELP)) {
               instructionMessage(fChannelAccessToken, aUserId);
@@ -240,7 +250,7 @@ public class LineBotController {
           if (pd.contains(KEY_START_GAME)) {
             processStartGame(aReplayToken, aTimestamp, aUserId);
           } else if (pd.contains(KEY_LEADERBOARD)) {
-            processLeaderboard(aReplayToken, aUserId, userLineDb);
+            processLeaderboard(aReplayToken, aUserId);
             confirmHelpGame(fChannelAccessToken, aUserId);
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
@@ -298,12 +308,12 @@ public class LineBotController {
     return aInvalidChat;
   }
 
-  private void processLeaderboard(String aReplayToken, String aUserId, UserLine aUserLineDb) throws IOException {
+  private void processLeaderboard(String aReplayToken, String aUserId) throws IOException {
     StringBuilder builder = new StringBuilder("Peringkat 5 kebawah...\n");
     List<GameLeaderboard> leaderboards = fDao.getAllGameLeaderboard();
     if (leaderboards.size() > 5) {
       List<GameLeaderboard> topFive = leaderboards.subList(0, 5);
-      carouselMessage(fChannelAccessToken, topFive, aUserLineDb, aUserId);
+      carouselMessage(fChannelAccessToken, topFive, aUserId);
       List<GameLeaderboard> restLeaderboard = leaderboards.subList(5, leaderboards.size());
       for (GameLeaderboard gameLeaderboard : restLeaderboard) {
         if (builder.length() < 1900) {
@@ -317,7 +327,7 @@ public class LineBotController {
       }
       replayMessage(fChannelAccessToken, aReplayToken, builder.toString());
     } else {
-      carouselMessage(fChannelAccessToken, leaderboards, aUserLineDb, aUserId);
+      carouselMessage(fChannelAccessToken, leaderboards, aUserId);
     }
   }
   private void processStartGame(String aReplayToken, long aTimestamp, String aUserId) throws IOException {
