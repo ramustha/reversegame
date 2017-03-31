@@ -136,6 +136,7 @@ public final class BotHelper {
     for (GameLeaderboard leaderboard : aGameLeaderboards) {
       String title = createTitle(leaderboard.getUsername());
       String desc = createTagline(leaderboard);
+      String profile = leaderboard.getProfileUrl() == null ? IMG_GOLD : leaderboard.getProfileUrl();
       String poster = IMG_GOLD;
       if (index == 1) {
         poster = IMG_SILVER;
@@ -146,7 +147,7 @@ public final class BotHelper {
       LOG.info("Result title {}\n desc {}\n poster {}\n", title, desc, poster);
 
       List<Action> buttons = Collections.singletonList(
-          new URIAction("Profile ", leaderboard.getProfileUrl()));
+          new URIAction("Profile ", profile));
       carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
     }
 
