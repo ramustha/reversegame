@@ -1,6 +1,7 @@
 package com.ramusthastudio.reversegame.task;
 
 import com.ramusthastudio.reversegame.database.Dao;
+import com.ramusthastudio.reversegame.model.GameLeaderboard;
 import com.ramusthastudio.reversegame.model.GameStatus;
 import com.ramusthastudio.reversegame.model.GameWord;
 import com.ramusthastudio.reversegame.model.UserChat;
@@ -58,15 +59,28 @@ public class ScheduledTasks {
           String status = gameStatus.getStatus();
           int wordTrue = gameStatus.getWordTrue();
           int wordFalse = gameStatus.getWordFalse();
+          long lastTime = gameStatus.getLastTime();
           boolean isAnswer = gameStatus.isAnswer();
 
-          if (wordFalse == 3) {
+          if (wordFalse > 2) {
             pushMessage(fChannelAccessToken, userId, "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
             stickerMessage(fChannelAccessToken, userId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
             confirmStartGame(fChannelAccessToken, userId);
 
             LOG.info("Game over....");
             fDao.updateGameStatus(new GameStatus(userId, KEY_STOP_GAME));
+
+            LOG.info("Update Leaderboard");
+            GameLeaderboard lb = fDao.getGameLeaderboardById(userId);
+            String username = lb.getUsername();
+            int bestScore = lb.getBestScore() > wordTrue ? lb.getBestScore() : wordTrue;
+            int bestTime = (int) (currentTimeMillis() - lastTime);
+            int bestAnswerTime = lb.getBestAnswerTime() < bestTime ? lb.getBestAnswerTime() : bestTime;
+            fDao.updateGameLeaderboard(new GameLeaderboard(
+                userId,
+                username,
+                bestScore,
+                bestAnswerTime, 0));
           } else {
             GameWord gameWord = fDao.getGameWordById(userId);
             int wordCount = gameWord.getWordCount();
@@ -87,21 +101,18 @@ public class ScheduledTasks {
               answer = getRandomMedium();
               quest = new StringBuffer(answer).reverse().toString();
               maxLevel = 20;
-            } else if (gameLevel == 3) {
+            } else if (gameLevel >= 3) {
               answer = getRandomLarge();
               quest = new StringBuffer(answer).reverse().toString();
-              maxLevel = 50;
+              maxLevel = 100;
             }
 
             LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);
             pushMessage(fChannelAccessToken, userId, quest);
             fDao.updateGameWord(new GameWord(userId, quest, answer, wordCount, gameLevel, currentTimeMillis(), 0));
 
-            if (isAnswer) {
-              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, currentTimeMillis(), false));
-            }else {
-              fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, ++wordFalse, currentTimeMillis(), false));
-            }
+            if (!isAnswer) { wordFalse++; }
+            fDao.updateGameStatus(new GameStatus(userId, status, wordTrue, wordFalse, lastTime, false));
           }
         }
       }

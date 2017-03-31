@@ -14,6 +14,7 @@ import com.ramusthastudio.reversegame.model.Postback;
 import com.ramusthastudio.reversegame.model.Source;
 import com.ramusthastudio.reversegame.model.UserChat;
 import com.ramusthastudio.reversegame.model.UserLine;
+import com.ramusthastudio.reversegame.util.StickerHelper;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +42,18 @@ import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_GROUP;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_ROOM;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_USER;
 import static com.ramusthastudio.reversegame.util.BotHelper.UNFOLLOW;
+import static com.ramusthastudio.reversegame.util.BotHelper.confirmHelpGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.confirmStartGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.getUserProfile;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessageGroup;
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
+import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
+import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
+import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_USELESS;
+import static java.lang.System.currentTimeMillis;
 
 @RestController
 @RequestMapping(value = "/linebot")
@@ -142,6 +148,27 @@ public class LineBotController {
       GameLeaderboard gameLeaderboardDb = fDao.getGameLeaderboardById(profile.getUserId());
       LOG.info("End setup database...");
 
+      if (gameStatusDb != null && gameStatusDb.getWordFalse() > 3) {
+        pushMessage(fChannelAccessToken, aUserId, "Game over...\nKamu salah menebak sebanyak " + gameStatusDb.getWordFalse() + " kali");
+        stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
+        confirmStartGame(fChannelAccessToken, aUserId);
+
+        LOG.info("Game over....");
+        fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
+
+        LOG.info("Update Leaderboard");
+        GameLeaderboard lb = fDao.getGameLeaderboardById(aUserId);
+        String username = lb.getUsername();
+        int bestScore = lb.getBestScore() > gameStatusDb.getWordTrue() ? lb.getBestScore() : gameStatusDb.getWordTrue();
+        int bestTime = (int) (currentTimeMillis() - gameStatusDb.getLastTime());
+        int bestAnswerTime = lb.getBestAnswerTime() < bestTime ? lb.getBestAnswerTime() : bestTime;
+        fDao.updateGameLeaderboard(new GameLeaderboard(
+            aUserId,
+            username,
+            bestScore,
+            bestAnswerTime, 0));
+      }
+
       switch (aEventType) {
         case UNFOLLOW:
           unfollowMessage(fChannelAccessToken, aUserId);
@@ -170,16 +197,17 @@ public class LineBotController {
           }
           if (gameLeaderboardDb == null) {
             LOG.info("Start save gameLeaderboardDb to database...");
-            fDao.setGameLeaderboard(new GameLeaderboard(aUserId, profile.getDisplayName()));
+            fDao.setGameLeaderboard(new GameLeaderboard(aUserId, profile.getDisplayName(), 10000));
           }
 
           break;
         case MESSAGE:
           String type = aMessage.type();
           String text = aMessage.text();
+          int invalidChat = userChatDb.getFalseCount();
           if (type.equals(MESSAGE_TEXT)) {
             if (text.contains(KEY_STOP_GAME)) {
-              if (gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+              if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
                 confirmStartGame(fChannelAccessToken, aUserId);
 
@@ -190,8 +218,12 @@ public class LineBotController {
               } else {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
               }
+            } else if (text.contains(KEY_LEADERBOARD)) {
+              replayMessage(fChannelAccessToken, aReplayToken, text);
+            } else if (text.contains(KEY_HELP)) {
+              instructionMessage(fChannelAccessToken, aUserId);
             } else {
-              if (gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+              if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
                 LOG.info("User answer..." + text);
                 GameWord gameWord = fDao.getGameWordById(aUserId);
                 String answer = gameWord.getWordAnswer().trim();
@@ -199,20 +231,50 @@ public class LineBotController {
                 int correct = gameStatusDb.getWordTrue();
                 int incorrect = gameStatusDb.getWordFalse();
                 if (answer.equalsIgnoreCase(userAnswer)) {
+                  correct++;
                   LOG.info("Correct answer..." + answer);
-                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, ++correct, incorrect, aTimestamp, true));
+
+                  long answerTimes = aTimestamp - gameWord.getStartQuest();
+                  LOG.info("answerTimes is : " + answerTimes);
                 } else {
+                  incorrect++;
                   LOG.info("Incorrect answer..." + answer);
-                  fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, ++incorrect, aTimestamp, true));
+                }
+                fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
+              } else {
+                String def;
+                if (invalidChat == 0) {
+                  def = "Game nya belum dimulai kamu udah tulis aja nih";
+                  invalidChat++;
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                } else if (invalidChat == 1) {
+                  def = "hmm..aku gak ngerti kalau kamu tulis sembarangan kata";
+                  invalidChat++;
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                  confirmHelpGame(fChannelAccessToken, aUserId);
+                } else if (invalidChat == 2) {
+                  def = "Kalau kamu mau lihat peringkat, kamu tinggal tulis 'Peringkat'";
+                  invalidChat++;
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                } else {
+                  def = "Aku marah nih kalau kamu belum mulai gamenya";
+                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, 0));
+                  pushMessage(fChannelAccessToken, aUserId, def);
+                  confirmHelpGame(fChannelAccessToken, aUserId);
                 }
               }
             }
 
-          }
 
-          LOG.info("isValidMessage...");
-          LOG.info("Start UserChat history...");
-          fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp));
+            LOG.info("Start UserChat history...");
+            fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp, invalidChat));
+          }else {
+            pushMessage(fChannelAccessToken, aUserId, "Kamu kirim apa itu ? aku gak ngerti");
+            confirmHelpGame(fChannelAccessToken, aUserId);
+          }
           break;
         case POSTBACK:
           String pd = aPostback.data();
@@ -224,7 +286,14 @@ public class LineBotController {
 
             replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
           } else if (pd.contains(KEY_LEADERBOARD)) {
-            replayMessage(fChannelAccessToken, aReplayToken, pd);
+            StringBuilder builder1 = new StringBuilder("Peringkat...\n");
+            for (GameLeaderboard gameLeaderboard : fDao.getAllGameLeaderboard()) {
+              builder1
+                  .append("\n").append("User: ").append(gameLeaderboard.getUsername())
+                  .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore())
+                  .append("\n").append("Best Time: ").append(gameLeaderboard.getBestAnswerTime());
+            }
+            replayMessage(fChannelAccessToken, aReplayToken, builder1.toString());
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
           }
