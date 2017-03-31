@@ -127,7 +127,7 @@ public class ScheduledTasks {
       List<UserChat> userChat = fDao.getAllUserChat();
       if (userChat != null && userChat.size() > 0) {
         for (UserChat chat : userChat) {
-          botChatOnTwoDay(now, chat);
+          botChatOnceDay(now, chat);
         }
       }
     } catch (Exception aE) {
@@ -135,14 +135,15 @@ public class ScheduledTasks {
     }
   }
 
-  private void botChatOnTwoDay(Date aNow, UserChat chat) {
+  private void botChatOnceDay(Date aNow, UserChat chat) {
     Timestamp lastTimeChat = new Timestamp(chat.getLastTime());
-    LocalDateTime timeLimit = lastTimeChat.toLocalDateTime().plusDays(2);
+    LocalDateTime timeLimit = lastTimeChat.toLocalDateTime().plusDays(1);
     if (timeLimit.isBefore(now())) {
       LOG.info("Start push message");
       try {
-        String text = "Kmana aja ? kok gak ngobrol sama aku lagi ?";
+        String text = "Kmana aja ? kok gak main lagi ?";
         pushMessage(fChannelAccessToken, chat.getUserId(), text);
+        confirmStartGame(fChannelAccessToken, chat.getUserId());
         fDao.updateUserChat(new UserChat(chat.getUserId(), text, aNow.getTime()));
       } catch (IOException aE) {
         LOG.error("Start push message error message : " + aE.getMessage());

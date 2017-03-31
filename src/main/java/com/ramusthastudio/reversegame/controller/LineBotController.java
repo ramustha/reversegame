@@ -151,26 +151,26 @@ public class LineBotController {
       GameLeaderboard gameLeaderboardDb = fDao.getGameLeaderboardById(profile.getUserId());
       LOG.info("End setup database...");
 
-      if (gameStatusDb != null && gameStatusDb.getWordFalse() == 3) {
-        pushMessage(fChannelAccessToken, aUserId, "Game over...\nKamu salah menebak sebanyak 3 kali");
-        stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
-        confirmStartGame(fChannelAccessToken, aUserId);
-
-        LOG.info("Game over....");
-        fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
-
-        LOG.info("Update Leaderboard");
-        GameLeaderboard lb = fDao.getGameLeaderboardById(aUserId);
-        String username = lb.getUsername();
-        int bestScore = lb.getBestScore() > gameStatusDb.getWordTrue() ? lb.getBestScore() : gameStatusDb.getWordTrue();
-        int bestTime = (int) (currentTimeMillis() - gameStatusDb.getLastTime());
-        int bestAnswerTime = lb.getBestAnswerTime() < bestTime ? lb.getBestAnswerTime() : bestTime;
-        fDao.updateGameLeaderboard(new GameLeaderboard(
-            aUserId,
-            username,
-            bestScore,
-            bestAnswerTime, 0));
-      }
+      // if (gameStatusDb != null && gameStatusDb.getWordFalse() == 3) {
+      //   pushMessage(fChannelAccessToken, aUserId, "Game over...\nKamu salah menebak sebanyak 3 kali");
+      //   stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
+      //   confirmStartGame(fChannelAccessToken, aUserId);
+      //
+      //   LOG.info("Game over....");
+      //   fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
+      //
+      //   LOG.info("Update Leaderboard");
+      //   GameLeaderboard lb = fDao.getGameLeaderboardById(aUserId);
+      //   String username = lb.getUsername();
+      //   int bestScore = lb.getBestScore() > gameStatusDb.getWordTrue() ? lb.getBestScore() : gameStatusDb.getWordTrue();
+      //   int bestTime = (int) (currentTimeMillis() - gameStatusDb.getLastTime());
+      //   int bestAnswerTime = lb.getBestAnswerTime() < bestTime ? lb.getBestAnswerTime() : bestTime;
+      //   fDao.updateGameLeaderboard(new GameLeaderboard(
+      //       aUserId,
+      //       username,
+      //       bestScore,
+      //       bestAnswerTime, 0));
+      // }
 
       switch (aEventType) {
         case UNFOLLOW:
@@ -313,7 +313,7 @@ public class LineBotController {
           builder
               .append("\n").append("User: ").append(gameLeaderboard.getUsername())
               .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
-              .append("\n").append("Best Time: ").append((Math.floor((gameLeaderboard.getBestAnswerTime() / 1000) * 100) / 100)).append(" detik")
+              .append("\n").append("Best Time: ").append(gameLeaderboard.getBestAnswerTime() / 1000).append(" detik")
               .append("\n");
         }
       }

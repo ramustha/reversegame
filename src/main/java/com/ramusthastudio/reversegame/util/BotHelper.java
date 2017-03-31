@@ -258,7 +258,7 @@ public final class BotHelper {
     int averageAnswerTime = aGameLeaderboard.getAverageAnswerTime();
 
     String decs = "Best score : " + bestScore + " Kata" + "\n" +
-        "Best answer time : " + (Math.floor((bestAnswerTime / 1000) * 100) / 100) + " detik";
+        "Best answer time : " + bestAnswerTime / 1000 + " detik";
     String filterTitle;
     if (decs.length() > 55) {
       filterTitle = decs.substring(0, 55) + "...";
