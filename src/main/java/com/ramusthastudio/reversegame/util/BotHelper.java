@@ -134,10 +134,10 @@ public final class BotHelper {
       String desc = createTagline(leaderboard);
       String poster = aUserLineDb.getPictureUrl();
 
-      LOG.info("ResultMovies title {}\n desc {}\n poster {}\n", title, desc, poster);
+      LOG.info("Result title {}\n desc {}\n poster {}\n", title, desc, poster);
 
       List<Action> buttons = Collections.singletonList(
-          new URIAction("Profile ", aUserLineDb.getPictureUrl()));
+          new PostbackAction("Profile ", aUserLineDb.getPictureUrl()));
           carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
     }
 

@@ -40,7 +40,7 @@ public class DaoImpl implements Dao {
   private final static String SQL_DELETE_GAME_WORD = "DELETE FROM game_word WHERE LOWER(id) LIKE LOWER(?) ;";
 
   private final static String SQL_SELECT_ALL_GAME_LEADERBOARD = "SELECT * FROM game_leaderboard ORDER BY best_score DESC";
-  private final static String SQL_GAME_LEADERBOARD_GET_BY_ID = SQL_SELECT_ALL_GAME_LEADERBOARD + " WHERE LOWER(id) LIKE LOWER(?) ;";
+  private final static String SQL_GAME_LEADERBOARD_GET_BY_ID = "SELECT * FROM game_leaderboard WHERE LOWER(id) LIKE LOWER(?) ;";
   private final static String SQL_INSERT_GAME_LEADERBOARD = "INSERT INTO game_leaderboard (id, username, best_score, best_answer_time, average_answer_time) VALUES (?, ?, ?, ?, ?);";
   private final static String SQL_UPDATE_GAME_LEADERBOARD = "UPDATE game_leaderboard SET username=?, best_score=?, best_answer_time=?, average_answer_time=? WHERE LOWER(id) LIKE LOWER(?);";
 
