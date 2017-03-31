@@ -221,6 +221,7 @@ public class LineBotController {
               }
             } else if (text.contains(KEY_LEADERBOARD)) {
               processLeaderboard(aReplayToken, aUserId, userLineDb);
+              confirmHelpGame(fChannelAccessToken, aUserId);
             } else if (text.contains(KEY_HELP)) {
               instructionMessage(fChannelAccessToken, aUserId);
               confirmStartGame(fChannelAccessToken, aUserId);
@@ -240,6 +241,7 @@ public class LineBotController {
             processStartGame(aReplayToken, aTimestamp, aUserId);
           } else if (pd.contains(KEY_LEADERBOARD)) {
             processLeaderboard(aReplayToken, aUserId, userLineDb);
+            confirmHelpGame(fChannelAccessToken, aUserId);
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
             confirmStartGame(fChannelAccessToken, aUserId);

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3575590f-db3b-4bfb-add2-0f36cac24155" name="Default" comment="" />
+    <list default="true" id="3575590f-db3b-4bfb-add2-0f36cac24155" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java" afterPath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java" afterPath="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java" />
+    </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -95,11 +98,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="LineBotController.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LineBotController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="49">
-              <caret line="153" column="6" lean-forward="false" selection-start-line="153" selection-start-column="9" selection-end-line="172" selection-end-column="10" />
+            <state relative-caret-position="304">
+              <caret line="311" column="58" lean-forward="true" selection-start-line="311" selection-start-column="58" selection-end-line="311" selection-end-column="66" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -161,11 +164,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BotHelper.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BotHelper.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="186">
-              <caret line="260" column="53" lean-forward="false" selection-start-line="260" selection-start-column="53" selection-end-line="260" selection-end-column="53" />
+              <caret line="260" column="64" lean-forward="false" selection-start-line="260" selection-start-column="64" selection-end-line="260" selection-end-column="64" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -631,9 +634,9 @@
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/WordsHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/model/GameLeaderboard.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/database/DaoImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/task/ScheduledTasks.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java" />
       </list>
     </option>
   </component>
@@ -1353,12 +1356,12 @@
       <workItem from="1490838120091" duration="37000" />
       <workItem from="1490838164416" duration="33606000" />
       <workItem from="1490888657701" duration="5767000" />
-      <workItem from="1490924983317" duration="7363000" />
+      <workItem from="1490924983317" duration="7619000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="50357000" />
+    <option name="totallyTimeSpent" value="50613000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1620" height="920" extended-state="0" />
@@ -1794,14 +1797,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/model/UserLine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="17" column="16" lean-forward="false" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.linecorp.bot/line-bot-model/1.6.0/361eee031c7f7a2009ff5bbc3c1d61a80f149940/line-bot-model-1.6.0-sources.jar!/com/linecorp/bot/model/profile/UserProfileResponse.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
@@ -1823,16 +1818,6 @@
         <state relative-caret-position="263">
           <caret line="440" column="25" lean-forward="false" selection-start-line="440" selection-start-column="25" selection-end-line="440" selection-end-column="25" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="260" column="53" lean-forward="false" selection-start-line="260" selection-start-column="53" selection-end-line="260" selection-end-column="53" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1878,8 +1863,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/controller/LineBotController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="49">
-          <caret line="153" column="6" lean-forward="false" selection-start-line="153" selection-start-column="9" selection-end-line="172" selection-end-column="10" />
+        <state relative-caret-position="304">
+          <caret line="311" column="58" lean-forward="true" selection-start-line="311" selection-start-column="58" selection-end-line="311" selection-end-column="66" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/model/UserLine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="17" column="16" lean-forward="false" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ramusthastudio/reversegame/util/BotHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="260" column="64" lean-forward="false" selection-start-line="260" selection-start-column="64" selection-end-line="260" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
