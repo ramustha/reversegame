@@ -61,7 +61,9 @@ public final class BotHelper {
   public static final String KEY_LEADERBOARD = "peringkat";
   public static final String KEY_HELP = "help";
 
-  public static final String IMG_HOLDER = "https://docs.google.com/uc?id=0B-F-b_ahxeRqSEJfd3VsSVNSYVk";
+  public static final String IMG_GOLD = "https://docs.google.com/uc?id=0B-F-b_ahxeRqRUszX2JGX3piTW8";
+  public static final String IMG_SILVER = "https://drive.google.com/open?id=0B-F-b_ahxeRqMWk0SU5ocDFHVG8";
+  public static final String IMG_BRONZE = "https://docs.google.com/uc?id=0B-F-b_ahxeRqOFVPM3pjaWFPMUk";
 
   public static UserProfileResponse getUserProfile(String aChannelAccessToken,
       String aUserId) throws IOException {
@@ -130,17 +132,25 @@ public final class BotHelper {
 
   public static List<CarouselColumn> buildCarouselColumn(List<GameLeaderboard> aGameLeaderboards,
       UserLine aUserLineDb) {
+    int index = 0;
     List<CarouselColumn> carouselColumn = new ArrayList<>();
     for (GameLeaderboard leaderboard : aGameLeaderboards) {
       String title = createTitle(leaderboard.getUsername());
       String desc = createTagline(leaderboard);
-      String poster = IMG_HOLDER;
-
+      String poster;
+      if (index == 0) {
+        poster = IMG_GOLD;
+      } else if (index == 1) {
+        poster = IMG_SILVER;
+      } else {
+        poster = IMG_BRONZE;
+      }
+      index++;
       LOG.info("Result title {}\n desc {}\n poster {}\n", title, desc, poster);
 
       List<Action> buttons = Collections.singletonList(
-          new URIAction("Profile ",IMG_HOLDER));
-          carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
+          new URIAction("Profile ", aUserLineDb.getPictureUrl()));
+      carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
     }
 
     return carouselColumn;
