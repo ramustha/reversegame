@@ -16,6 +16,7 @@ import com.ramusthastudio.reversegame.model.UserChat;
 import com.ramusthastudio.reversegame.model.UserLine;
 import com.ramusthastudio.reversegame.util.StickerHelper;
 import java.io.IOException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_GROUP;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_ROOM;
 import static com.ramusthastudio.reversegame.util.BotHelper.SOURCE_USER;
 import static com.ramusthastudio.reversegame.util.BotHelper.UNFOLLOW;
+import static com.ramusthastudio.reversegame.util.BotHelper.carouselMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.confirmHelpGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.confirmStartGame;
 import static com.ramusthastudio.reversegame.util.BotHelper.getUserProfile;
@@ -268,10 +270,9 @@ public class LineBotController {
               }
             }
 
-
             LOG.info("Start UserChat history...");
             fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp, invalidChat));
-          }else {
+          } else {
             pushMessage(fChannelAccessToken, aUserId, "Kamu kirim apa itu ? aku gak ngerti");
             confirmHelpGame(fChannelAccessToken, aUserId);
           }
@@ -286,14 +287,24 @@ public class LineBotController {
 
             replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
           } else if (pd.contains(KEY_LEADERBOARD)) {
-            StringBuilder builder1 = new StringBuilder("Peringkat...\n");
-            for (GameLeaderboard gameLeaderboard : fDao.getAllGameLeaderboard()) {
-              builder1
-                  .append("\n").append("User: ").append(gameLeaderboard.getUsername())
-                  .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore())
-                  .append("\n").append("Best Time: ").append(gameLeaderboard.getBestAnswerTime());
+            StringBuilder builder = new StringBuilder("Peringkat...\n");
+            List<GameLeaderboard> leaderboards = fDao.getAllGameLeaderboard();
+            if (leaderboards.size() > 5) {
+              List<GameLeaderboard> topFive = leaderboards.subList(0, 4);
+              carouselMessage(fChannelAccessToken, topFive, userLineDb, aUserId);
+              List<GameLeaderboard> restLeaderboard = leaderboards.subList(5, leaderboards.size());
+              for (GameLeaderboard gameLeaderboard : restLeaderboard) {
+                builder
+                    .append("\n").append("User: ").append(gameLeaderboard.getUsername())
+                    .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
+                    .append("\n").append("Best Time: ").append((Math.round(gameLeaderboard.getBestAnswerTime() / 1000))).append(" detik")
+                    .append("\n")
+                ;
+              }
+              replayMessage(fChannelAccessToken, aReplayToken, builder.toString());
+            } else {
+              carouselMessage(fChannelAccessToken, leaderboards, userLineDb, aUserId);
             }
-            replayMessage(fChannelAccessToken, aReplayToken, builder1.toString());
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
           }

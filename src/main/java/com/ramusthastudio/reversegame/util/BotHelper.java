@@ -8,12 +8,19 @@ import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.message.StickerMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.model.message.template.Template;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.model.response.BotApiResponse;
+import com.ramusthastudio.reversegame.model.GameLeaderboard;
+import com.ramusthastudio.reversegame.model.UserLine;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -110,6 +117,33 @@ public final class BotHelper {
         .build().pushMessage(pushMessage).execute();
   }
 
+  public static Response<BotApiResponse> carouselMessage(String aChannelAccessToken,
+      List<GameLeaderboard> aGameLeaderboards, UserLine aUserLineDb, String aUserId) throws IOException {
+    List<CarouselColumn> carouselColumn = buildCarouselColumn(aGameLeaderboards, aUserLineDb);
+    CarouselTemplate template = new CarouselTemplate(carouselColumn);
+    return templateMessage(aChannelAccessToken, aUserId, template);
+  }
+
+  public static List<CarouselColumn> buildCarouselColumn(List<GameLeaderboard> aGameLeaderboards,
+      UserLine aUserLineDb) {
+    List<CarouselColumn> carouselColumn = new ArrayList<>();
+    for (GameLeaderboard leaderboard : aGameLeaderboards) {
+      String title = createTitle(leaderboard.getUsername());
+      String desc = createTagline(leaderboard);
+      String poster = aUserLineDb.getPictureUrl();
+
+      LOG.info("ResultMovies title {}\n desc {}\n poster {}\n", title, desc, poster);
+
+      // List<Action> buttons = Arrays.asList(
+      //     new PostbackAction("Sinopsis ", KEY_OVERVIEW + " " + aCinema.getCity() + "," + leaderboard.getMovie() + "," + aFilter),
+      //     new PostbackAction("Jadwal ", KEY_SCHEDULE + " " + aCinema.getCity() + "," + leaderboard.getMovie() + "," + aFilter)
+      // );
+      carouselColumn.add(new CarouselColumn(poster, title, desc, Collections.emptyList()));
+    }
+
+    return carouselColumn;
+  }
+
   public static void greetingMessageGroup(String aChannelAccessToken, String aUserId) throws IOException {
     String greeting = "Hi manteman\n";
     greeting += "Makasih aku udah di invite disini!\n";
@@ -196,5 +230,31 @@ public final class BotHelper {
 
   public static String reverseString(String aString) {
     return String.valueOf(new StringBuffer(aString).reverse());
+  }
+
+  public static String createTitle(String aTitle) {
+    String filterTitle;
+    if (aTitle.length() > 30) {
+      filterTitle = aTitle.substring(0, 30) + "...";
+    } else {
+      filterTitle = aTitle;
+    }
+    return filterTitle;
+  }
+
+  public static String createTagline(GameLeaderboard aGameLeaderboard) {
+    int bestScore = aGameLeaderboard.getBestScore();
+    int bestAnswerTime = aGameLeaderboard.getBestAnswerTime();
+    int averageAnswerTime = aGameLeaderboard.getAverageAnswerTime();
+
+    String decs = "Best score : " + bestScore + " Kata" + "\n" +
+        "Best answer time : " + (Math.round(bestAnswerTime / 1000)) + " detik";
+    String filterTitle;
+    if (decs.length() > 55) {
+      filterTitle = decs.substring(0, 55) + "...";
+    } else {
+      filterTitle = decs;
+    }
+    return filterTitle;
   }
 }
