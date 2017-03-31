@@ -209,7 +209,9 @@ public class LineBotController {
           String text = aMessage.text();
           int invalidChat = userChatDb.getFalseCount();
           if (type.equals(MESSAGE_TEXT)) {
-            if (text.contains(KEY_STOP_GAME)) {
+            if (text.contains(KEY_START_GAME)) {
+              processStartGame(aReplayToken, aTimestamp, aUserId);
+            } else if (text.contains(KEY_STOP_GAME)) {
               if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
                 confirmStartGame(fChannelAccessToken, aUserId);
@@ -222,55 +224,12 @@ public class LineBotController {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
               }
             } else if (text.contains(KEY_LEADERBOARD)) {
-              replayMessage(fChannelAccessToken, aReplayToken, text);
+              processLeaderboard(aReplayToken, aUserId, userLineDb);
             } else if (text.contains(KEY_HELP)) {
               instructionMessage(fChannelAccessToken, aUserId);
             } else {
-              if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
-                LOG.info("User answer..." + text);
-                GameWord gameWord = fDao.getGameWordById(aUserId);
-                String answer = gameWord.getWordAnswer().trim();
-                String userAnswer = text.trim();
-                int correct = gameStatusDb.getWordTrue();
-                int incorrect = gameStatusDb.getWordFalse();
-                if (answer.equalsIgnoreCase(userAnswer)) {
-                  correct++;
-                  LOG.info("Correct answer..." + answer);
-
-                  long answerTimes = aTimestamp - gameWord.getStartQuest();
-                  LOG.info("answerTimes is : " + answerTimes);
-                } else {
-                  incorrect++;
-                  LOG.info("Incorrect answer..." + answer);
-                }
-                fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
-              } else {
-                String def;
-                if (invalidChat == 0) {
-                  def = "Game nya belum dimulai kamu udah tulis aja nih";
-                  invalidChat++;
-                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
-                  pushMessage(fChannelAccessToken, aUserId, def);
-                } else if (invalidChat == 1) {
-                  def = "hmm..aku gak ngerti kalau kamu tulis sembarangan kata";
-                  invalidChat++;
-                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
-                  pushMessage(fChannelAccessToken, aUserId, def);
-                  confirmHelpGame(fChannelAccessToken, aUserId);
-                } else if (invalidChat == 2) {
-                  def = "Kalau kamu mau lihat peringkat, kamu tinggal tulis 'Peringkat'";
-                  invalidChat++;
-                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, invalidChat));
-                  pushMessage(fChannelAccessToken, aUserId, def);
-                } else {
-                  def = "Aku marah nih kalau kamu belum mulai gamenya";
-                  fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, 0));
-                  pushMessage(fChannelAccessToken, aUserId, def);
-                  confirmHelpGame(fChannelAccessToken, aUserId);
-                }
-              }
+              invalidChat = processAnswerUser(aTimestamp, aUserId, gameStatusDb, text, invalidChat);
             }
-
             LOG.info("Start UserChat history...");
             fDao.updateUserChat(new UserChat(aUserId, aMessage.text(), aTimestamp, invalidChat));
           } else {
@@ -281,33 +240,9 @@ public class LineBotController {
         case POSTBACK:
           String pd = aPostback.data();
           if (pd.contains(KEY_START_GAME)) {
-            LOG.info("Start update GameStatus...");
-            fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, aTimestamp));
-            LOG.info("Start update GameWord...");
-            fDao.updateGameWord(new GameWord(aUserId, 0, 1));
-
-            replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
+            processStartGame(aReplayToken, aTimestamp, aUserId);
           } else if (pd.contains(KEY_LEADERBOARD)) {
-            StringBuilder builder = new StringBuilder("Peringkat 5 kebawah...\n");
-            List<GameLeaderboard> leaderboards = fDao.getAllGameLeaderboard();
-            if (leaderboards.size() > 5) {
-              List<GameLeaderboard> topFive = leaderboards.subList(0, 5);
-              carouselMessage(fChannelAccessToken, topFive, userLineDb, aUserId);
-              List<GameLeaderboard> restLeaderboard = leaderboards.subList(5, leaderboards.size());
-              for (GameLeaderboard gameLeaderboard : restLeaderboard) {
-                if (builder.length() < 1900) {
-
-                  builder
-                      .append("\n").append("User: ").append(gameLeaderboard.getUsername())
-                      .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
-                      .append("\n").append("Best Time: ").append((Math.round(gameLeaderboard.getBestAnswerTime() / 1000))).append(" detik")
-                      .append("\n");
-                }
-              }
-              replayMessage(fChannelAccessToken, aReplayToken, builder.toString());
-            } else {
-              carouselMessage(fChannelAccessToken, leaderboards, userLineDb, aUserId);
-            }
+            processLeaderboard(aReplayToken, aUserId, userLineDb);
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
           }
@@ -315,5 +250,82 @@ public class LineBotController {
       }
 
     } catch (IOException aE) { LOG.error("Message {}", aE.getMessage()); }
+  }
+  private int processAnswerUser(long aTimestamp, String aUserId, GameStatus aGameStatusDb, String aText, int aInvalidChat) throws IOException {
+    if (aGameStatusDb != null && aGameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+      LOG.info("User answer..." + aText);
+      GameWord gameWord = fDao.getGameWordById(aUserId);
+      String answer = gameWord.getWordAnswer().trim();
+      String userAnswer = aText.trim();
+      int correct = aGameStatusDb.getWordTrue();
+      int incorrect = aGameStatusDb.getWordFalse();
+      if (answer.equalsIgnoreCase(userAnswer)) {
+        correct++;
+        LOG.info("Correct answer..." + answer);
+
+        long answerTimes = aTimestamp - gameWord.getStartQuest();
+        LOG.info("answerTimes is : " + answerTimes);
+      } else {
+        incorrect++;
+        LOG.info("Incorrect answer..." + answer);
+      }
+      fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
+    } else {
+      String def;
+      if (aInvalidChat == 0) {
+        def = "Game nya belum dimulai kamu udah tulis aja nih";
+        aInvalidChat++;
+        fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, aInvalidChat));
+        pushMessage(fChannelAccessToken, aUserId, def);
+      } else if (aInvalidChat == 1) {
+        def = "hmm..aku gak ngerti kalau kamu tulis sembarangan kata";
+        aInvalidChat++;
+        fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, aInvalidChat));
+        pushMessage(fChannelAccessToken, aUserId, def);
+        confirmHelpGame(fChannelAccessToken, aUserId);
+      } else if (aInvalidChat == 2) {
+        def = "Kalau kamu mau lihat peringkat, kamu tinggal tulis 'Peringkat'";
+        aInvalidChat++;
+        fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, aInvalidChat));
+        pushMessage(fChannelAccessToken, aUserId, def);
+      } else {
+        def = "Aku marah nih kalau kamu belum mulai gamenya";
+        fDao.updateUserChat(new UserChat(aUserId, def, aTimestamp, 0));
+        pushMessage(fChannelAccessToken, aUserId, def);
+        confirmHelpGame(fChannelAccessToken, aUserId);
+      }
+    }
+    return aInvalidChat;
+  }
+
+  private void processLeaderboard(String aReplayToken, String aUserId, UserLine aUserLineDb) throws IOException {
+    StringBuilder builder = new StringBuilder("Peringkat 5 kebawah...\n");
+    List<GameLeaderboard> leaderboards = fDao.getAllGameLeaderboard();
+    if (leaderboards.size() > 5) {
+      List<GameLeaderboard> topFive = leaderboards.subList(0, 5);
+      carouselMessage(fChannelAccessToken, topFive, aUserLineDb, aUserId);
+      List<GameLeaderboard> restLeaderboard = leaderboards.subList(5, leaderboards.size());
+      for (GameLeaderboard gameLeaderboard : restLeaderboard) {
+        if (builder.length() < 1900) {
+
+          builder
+              .append("\n").append("User: ").append(gameLeaderboard.getUsername())
+              .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
+              .append("\n").append("Best Time: ").append((Math.round(gameLeaderboard.getBestAnswerTime() / 1000))).append(" detik")
+              .append("\n");
+        }
+      }
+      replayMessage(fChannelAccessToken, aReplayToken, builder.toString());
+    } else {
+      carouselMessage(fChannelAccessToken, leaderboards, aUserLineDb, aUserId);
+    }
+  }
+  private void processStartGame(String aReplayToken, long aTimestamp, String aUserId) throws IOException {
+    LOG.info("Start update GameStatus...");
+    fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, aTimestamp));
+    LOG.info("Start update GameWord...");
+    fDao.updateGameWord(new GameWord(aUserId, 0, 1));
+
+    replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
   }
 }
