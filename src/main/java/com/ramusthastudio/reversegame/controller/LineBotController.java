@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.ramusthastudio.reversegame.util.BotHelper.FOLLOW;
+import static com.ramusthastudio.reversegame.util.BotHelper.IMG_GOLD;
 import static com.ramusthastudio.reversegame.util.BotHelper.JOIN;
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_HELP;
 import static com.ramusthastudio.reversegame.util.BotHelper.KEY_LEADERBOARD;
@@ -119,6 +120,8 @@ public class LineBotController {
 
   private void sourceGroupProccess(String aEventType, String aReplayToken, long aTimestamp, Postback aPostback, Message aMessage, Source aSource) {
     try {
+      UserLine userLineDb = fDao.getUserLineById(aSource.groupId());
+      UserChat userChatDb = fDao.getUserChatById(aSource.groupId());
       GameStatus gameStatusDb = fDao.getGameStatusById(aSource.groupId());
       GameWord gameWordDb = fDao.getGameWordById(aSource.groupId());
 
@@ -131,6 +134,14 @@ public class LineBotController {
           instructionMessageGroup(fChannelAccessToken, aSource.groupId());
           confirmStartGame(fChannelAccessToken, aSource.groupId());
 
+          if (userLineDb == null) {
+            LOG.info("Start save userLineDb to database...");
+            fDao.setUserLine(new UserProfileResponse("Group_" + aSource.groupId(), aSource.groupId(), IMG_GOLD, "Gak ada status"));
+          }
+          if (userChatDb == null) {
+            LOG.info("Start save userChatDb to database...");
+            fDao.setUserChat(new UserChat(aSource.groupId(), "Greeting Message", aTimestamp));
+          }
           if (gameStatusDb == null) {
             LOG.info("Start save gameStatusDb to database...");
             fDao.setGameStatus(new GameStatus(aSource.groupId(), KEY_STOP_GAME, aTimestamp));
@@ -361,7 +372,7 @@ public class LineBotController {
         fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
         stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_CHEERS));
         pushMessage(fChannelAccessToken, aUserId, "Selesai...bawah aku telat");
-      }else {
+      } else {
         fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, 0, 0, aTimestamp, true));
       }
     }
