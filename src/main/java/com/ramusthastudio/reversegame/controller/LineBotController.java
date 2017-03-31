@@ -116,6 +116,9 @@ public class LineBotController {
 
   private void sourceGroupProccess(String aEventType, String aReplayToken, long aTimestamp, Postback aPostback, Message aMessage, Source aSource) {
     try {
+      GameStatus gameStatusDb = fDao.getGameStatusById(aSource.groupId());
+      GameWord gameWordDb = fDao.getGameWordById(aSource.groupId());
+
       switch (aEventType) {
         case LEAVE:
           break;
@@ -124,23 +127,57 @@ public class LineBotController {
           greetingMessageGroup(fChannelAccessToken, aSource.groupId());
           instructionMessageGroup(fChannelAccessToken, aSource.groupId());
           confirmStartGame(fChannelAccessToken, aSource.groupId());
+
+          if (gameStatusDb == null) {
+            LOG.info("Start save gameStatusDb to database...");
+            fDao.setGameStatus(new GameStatus(aSource.groupId(), KEY_STOP_GAME, aTimestamp));
+          }
+          if (gameWordDb == null) {
+            LOG.info("Start save gameStatusDb to database...");
+            fDao.setGameWord(new GameWord(aSource.groupId(), 0, 0));
+          }
           break;
         case MESSAGE:
-          if (aMessage.type().equals(MESSAGE_TEXT)) {
-            String text = aMessage.text();
+          String type = aMessage.type();
+          String text = aMessage.text();
+
+          if (type.equals(MESSAGE_TEXT)) {
+            if (text.contains(KEY_START_GAME)) {
+              processStartGame(aReplayToken, aTimestamp, aSource.groupId());
+            } else if (text.contains(KEY_STOP_GAME)) {
+              if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+                replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
+                confirmStartGame(fChannelAccessToken, aSource.groupId());
+
+                LOG.info("Start update GameStatus...");
+                fDao.updateGameStatus(new GameStatus(aSource.groupId(), KEY_STOP_GAME, aTimestamp));
+                LOG.info("Start update GameWord...");
+                fDao.updateGameWord(new GameWord(aSource.groupId(), "", "", 0, 0, 0, 0));
+              } else {
+                replayMessage(fChannelAccessToken, aReplayToken, "Game nya udah berhenti...");
+              }
+            } else if (text.contains(KEY_LEADERBOARD)) {
+              processLeaderboard(aReplayToken, aSource.groupId());
+              confirmHelpGame(fChannelAccessToken, aSource.groupId());
+            } else if (text.contains(KEY_HELP)) {
+              instructionMessage(fChannelAccessToken, aSource.groupId());
+              confirmStartGame(fChannelAccessToken, aSource.groupId());
+            } else {
+              processAnswerGroup(aTimestamp, aSource.groupId(), gameStatusDb, text);
+            }
           }
           break;
         case POSTBACK:
           String pd = aPostback.data();
-          // if (pd.contains(KEY_START_GAME)) {
-          //   processStartGame(aReplayToken, aTimestamp, aSource.groupId());
-          // } else if (pd.contains(KEY_LEADERBOARD)) {
-          //   processLeaderboard(aReplayToken, aSource.groupId(), userLineDb);
-          //   confirmHelpGame(fChannelAccessToken, aSource.groupId());
-          // } else if (pd.contains(KEY_HELP)) {
-          //   instructionMessage(fChannelAccessToken, aSource.groupId());
-          //   confirmStartGame(fChannelAccessToken, aSource.groupId());
-          // }
+          if (pd.contains(KEY_START_GAME)) {
+            processStartGame(aReplayToken, aTimestamp, aSource.groupId());
+          } else if (pd.contains(KEY_LEADERBOARD)) {
+            processLeaderboard(aReplayToken, aSource.groupId());
+            confirmHelpGame(fChannelAccessToken, aSource.groupId());
+          } else if (pd.contains(KEY_HELP)) {
+            instructionMessage(fChannelAccessToken, aSource.groupId());
+            confirmStartGame(fChannelAccessToken, aSource.groupId());
+          }
           break;
       }
     } catch (IOException aE) { LOG.error("Message {}", aE.getMessage()); }
@@ -306,6 +343,27 @@ public class LineBotController {
       }
     }
     return aInvalidChat;
+  }
+
+  private void processAnswerGroup(long aTimestamp, String aUserId, GameStatus aGameStatusDb, String aText) throws IOException {
+    if (aGameStatusDb != null && aGameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
+      LOG.info("User answer..." + aText);
+      GameWord gameWord = fDao.getGameWordById(aUserId);
+      String answer = gameWord.getWordAnswer().trim();
+      String userAnswer = aText.trim();
+      int correct = aGameStatusDb.getWordTrue();
+      int incorrect = aGameStatusDb.getWordFalse();
+      if (answer.equalsIgnoreCase(userAnswer)) {
+        correct++;
+        LOG.info("Correct answer..." + answer);
+        long answerTimes = aTimestamp - gameWord.getStartQuest();
+        LOG.info("answerTimes is : " + answerTimes);
+      } else {
+        incorrect++;
+        LOG.info("Incorrect answer..." + answer);
+      }
+      fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
+    }
   }
 
   private void processLeaderboard(String aReplayToken, String aUserId) throws IOException {
