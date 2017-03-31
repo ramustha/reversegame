@@ -62,8 +62,8 @@ public class ScheduledTasks {
           long lastTime = gameStatus.getLastTime();
           boolean isAnswer = gameStatus.isAnswer();
 
-          if (wordFalse == 3) {
-            pushMessage(fChannelAccessToken, userId, "Game over...\nKamu salah menebak sebanyak " + wordFalse + " kali");
+          if (wordFalse > 3) {
+            pushMessage(fChannelAccessToken, userId, "Game over...\nKamu salah menebak sebanyak 3 kali");
             stickerMessage(fChannelAccessToken, userId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
             confirmStartGame(fChannelAccessToken, userId);
 
