@@ -227,6 +227,7 @@ public class LineBotController {
               processLeaderboard(aReplayToken, aUserId, userLineDb);
             } else if (text.contains(KEY_HELP)) {
               instructionMessage(fChannelAccessToken, aUserId);
+              confirmStartGame(fChannelAccessToken, aUserId);
             } else {
               invalidChat = processAnswerUser(aTimestamp, aUserId, gameStatusDb, text, invalidChat);
             }
@@ -245,6 +246,7 @@ public class LineBotController {
             processLeaderboard(aReplayToken, aUserId, userLineDb);
           } else if (pd.contains(KEY_HELP)) {
             instructionMessage(fChannelAccessToken, aUserId);
+            confirmStartGame(fChannelAccessToken, aUserId);
           }
           break;
       }
@@ -311,7 +313,7 @@ public class LineBotController {
           builder
               .append("\n").append("User: ").append(gameLeaderboard.getUsername())
               .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
-              .append("\n").append("Best Time: ").append((Math.floor(gameLeaderboard.getBestAnswerTime() * 100) / 100)).append(" detik")
+              .append("\n").append("Best Time: ").append((Math.floor((gameLeaderboard.getBestAnswerTime() / 1000) * 100) / 100)).append(" detik")
               .append("\n");
         }
       }
