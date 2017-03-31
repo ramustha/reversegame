@@ -4,7 +4,9 @@ import com.linecorp.bot.client.LineMessagingServiceBuilder;
 import com.linecorp.bot.model.Multicast;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.message.StickerMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
@@ -134,11 +136,9 @@ public final class BotHelper {
 
       LOG.info("ResultMovies title {}\n desc {}\n poster {}\n", title, desc, poster);
 
-      // List<Action> buttons = Arrays.asList(
-      //     new PostbackAction("Sinopsis ", KEY_OVERVIEW + " " + aCinema.getCity() + "," + leaderboard.getMovie() + "," + aFilter),
-      //     new PostbackAction("Jadwal ", KEY_SCHEDULE + " " + aCinema.getCity() + "," + leaderboard.getMovie() + "," + aFilter)
-      // );
-      carouselColumn.add(new CarouselColumn(poster, title, desc, Collections.emptyList()));
+      List<Action> buttons = Collections.singletonList(
+          new URIAction("Profile ", aUserLineDb.getPictureUrl()));
+          carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
     }
 
     return carouselColumn;
