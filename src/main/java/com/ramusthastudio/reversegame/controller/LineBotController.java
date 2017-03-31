@@ -110,7 +110,7 @@ public class LineBotController {
           sourceGroupProccess(eventType, replayToken, timestamp, postback, message, source);
           break;
         case SOURCE_ROOM:
-          // sourceGroupProccess(eventType, replayToken, postback, message, source);
+          sourceGroupProccess(eventType, replayToken, timestamp, postback, message, source);
           break;
       }
     }
