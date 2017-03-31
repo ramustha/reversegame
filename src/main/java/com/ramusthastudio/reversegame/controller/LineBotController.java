@@ -14,6 +14,7 @@ import com.ramusthastudio.reversegame.model.Postback;
 import com.ramusthastudio.reversegame.model.Source;
 import com.ramusthastudio.reversegame.model.UserChat;
 import com.ramusthastudio.reversegame.model.UserLine;
+import com.ramusthastudio.reversegame.util.StickerHelper;
 import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -52,7 +53,9 @@ import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessageGroup;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
+import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
+import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_CHEERS;
 
 @RestController
 @RequestMapping(value = "/linebot")
@@ -351,18 +354,14 @@ public class LineBotController {
       GameWord gameWord = fDao.getGameWordById(aUserId);
       String answer = gameWord.getWordAnswer().trim();
       String userAnswer = aText.trim();
-      int correct = aGameStatusDb.getWordTrue();
-      int incorrect = aGameStatusDb.getWordFalse();
       if (answer.equalsIgnoreCase(userAnswer)) {
-        correct++;
         LOG.info("Correct answer..." + answer);
         long answerTimes = aTimestamp - gameWord.getStartQuest();
         LOG.info("answerTimes is : " + answerTimes);
-      } else {
-        incorrect++;
-        LOG.info("Incorrect answer..." + answer);
+        fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
+        stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_CHEERS));
+        pushMessage(fChannelAccessToken, aUserId, "Selesai...bawah ane telat");
       }
-      fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, correct, incorrect, aTimestamp, true));
     }
   }
 
