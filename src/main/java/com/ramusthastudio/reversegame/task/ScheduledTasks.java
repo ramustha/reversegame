@@ -106,7 +106,7 @@ public class ScheduledTasks {
             } else if (gameLevel >= 3) {
               answer = getRandomLarge();
               quest = new StringBuffer(answer).reverse().toString();
-              maxLevel = 100;
+              maxLevel = 1000;
             }
 
             LOG.info("StartingGame.... Quest : {} Answer : {} level {} ", quest, answer, gameLevel);

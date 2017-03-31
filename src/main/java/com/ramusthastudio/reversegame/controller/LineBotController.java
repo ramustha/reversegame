@@ -146,7 +146,7 @@ public class LineBotController {
 
           if (type.equals(MESSAGE_TEXT)) {
             if (text.contains(KEY_START_GAME)) {
-              processStartGame(aReplayToken, aTimestamp, aSource.groupId());
+              processStartGameGroup(aReplayToken, aTimestamp, aSource.groupId());
             } else if (text.contains(KEY_STOP_GAME)) {
               if (gameStatusDb != null && gameStatusDb.getStatus().equalsIgnoreCase(KEY_START_GAME)) {
                 replayMessage(fChannelAccessToken, aReplayToken, "Game berhenti...");
@@ -173,7 +173,7 @@ public class LineBotController {
         case POSTBACK:
           String pd = aPostback.data();
           if (pd.contains(KEY_START_GAME)) {
-            processStartGame(aReplayToken, aTimestamp, aSource.groupId());
+            processStartGameGroup(aReplayToken, aTimestamp, aSource.groupId());
           } else if (pd.contains(KEY_LEADERBOARD)) {
             processLeaderboard(aReplayToken, aSource.groupId());
             confirmHelpGame(fChannelAccessToken, aSource.groupId());
@@ -361,6 +361,8 @@ public class LineBotController {
         fDao.updateGameStatus(new GameStatus(aUserId, KEY_STOP_GAME));
         stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_CHEERS));
         pushMessage(fChannelAccessToken, aUserId, "Selesai...bawah ane telat");
+      }else {
+        fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, 0, 0, aTimestamp, true));
       }
     }
   }
@@ -392,6 +394,15 @@ public class LineBotController {
     fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, aTimestamp));
     LOG.info("Start update GameWord...");
     fDao.updateGameWord(new GameWord(aUserId, 0, 1));
+
+    replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
+  }
+
+  private void processStartGameGroup(String aReplayToken, long aTimestamp, String aUserId) throws IOException {
+    LOG.info("Start update GameStatus...");
+    fDao.updateGameStatus(new GameStatus(aUserId, KEY_START_GAME, aTimestamp));
+    LOG.info("Start update GameWord...");
+    fDao.updateGameWord(new GameWord(aUserId, 0, 3));
 
     replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
   }
