@@ -288,19 +288,21 @@ public class LineBotController {
 
             replayMessage(fChannelAccessToken, aReplayToken, "Game dimulai...");
           } else if (pd.contains(KEY_LEADERBOARD)) {
-            StringBuilder builder = new StringBuilder("Peringkat...\n");
+            StringBuilder builder = new StringBuilder("Peringkat 5 kebawah...\n");
             List<GameLeaderboard> leaderboards = fDao.getAllGameLeaderboard();
             if (leaderboards.size() > 5) {
               List<GameLeaderboard> topFive = leaderboards.subList(0, 5);
               carouselMessage(fChannelAccessToken, topFive, userLineDb, aUserId);
               List<GameLeaderboard> restLeaderboard = leaderboards.subList(5, leaderboards.size());
               for (GameLeaderboard gameLeaderboard : restLeaderboard) {
-                builder
-                    .append("\n").append("User: ").append(gameLeaderboard.getUsername())
-                    .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
-                    .append("\n").append("Best Time: ").append((Math.round(gameLeaderboard.getBestAnswerTime() / 1000))).append(" detik")
-                    .append("\n")
-                ;
+                if (builder.length() < 1900) {
+
+                  builder
+                      .append("\n").append("User: ").append(gameLeaderboard.getUsername())
+                      .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
+                      .append("\n").append("Best Time: ").append((Math.round(gameLeaderboard.getBestAnswerTime() / 1000))).append(" detik")
+                      .append("\n");
+                }
               }
               replayMessage(fChannelAccessToken, aReplayToken, builder.toString());
             } else {

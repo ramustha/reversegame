@@ -62,7 +62,7 @@ public final class BotHelper {
   public static final String KEY_HELP = "help";
 
   public static final String IMG_GOLD = "https://docs.google.com/uc?id=0B-F-b_ahxeRqRUszX2JGX3piTW8";
-  public static final String IMG_SILVER = "https://drive.google.com/open?id=0B-F-b_ahxeRqMWk0SU5ocDFHVG8";
+  public static final String IMG_SILVER = "https://drive.google.com/uc?id=0B-F-b_ahxeRqMWk0SU5ocDFHVG8";
   public static final String IMG_BRONZE = "https://docs.google.com/uc?id=0B-F-b_ahxeRqOFVPM3pjaWFPMUk";
 
   public static UserProfileResponse getUserProfile(String aChannelAccessToken,
@@ -137,12 +137,10 @@ public final class BotHelper {
     for (GameLeaderboard leaderboard : aGameLeaderboards) {
       String title = createTitle(leaderboard.getUsername());
       String desc = createTagline(leaderboard);
-      String poster;
-      if (index == 0) {
-        poster = IMG_GOLD;
-      } else if (index == 1) {
+      String poster = IMG_GOLD;
+      if (index == 1) {
         poster = IMG_SILVER;
-      } else {
+      } else if (index > 1) {
         poster = IMG_BRONZE;
       }
       index++;
