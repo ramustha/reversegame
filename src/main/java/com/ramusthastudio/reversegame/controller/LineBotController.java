@@ -14,7 +14,6 @@ import com.ramusthastudio.reversegame.model.Postback;
 import com.ramusthastudio.reversegame.model.Source;
 import com.ramusthastudio.reversegame.model.UserChat;
 import com.ramusthastudio.reversegame.model.UserLine;
-import com.ramusthastudio.reversegame.util.StickerHelper;
 import java.io.IOException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -52,10 +51,7 @@ import static com.ramusthastudio.reversegame.util.BotHelper.greetingMessageGroup
 import static com.ramusthastudio.reversegame.util.BotHelper.instructionMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.pushMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.replayMessage;
-import static com.ramusthastudio.reversegame.util.BotHelper.stickerMessage;
 import static com.ramusthastudio.reversegame.util.BotHelper.unfollowMessage;
-import static com.ramusthastudio.reversegame.util.StickerHelper.JAMES_STICKER_USELESS;
-import static java.lang.System.currentTimeMillis;
 
 @RestController
 @RequestMapping(value = "/linebot")
@@ -313,7 +309,7 @@ public class LineBotController {
           builder
               .append("\n").append("User: ").append(gameLeaderboard.getUsername())
               .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
-              .append("\n").append("Best Time: ").append(gameLeaderboard.getBestAnswerTime() / 1000).append(" detik")
+              .append("\n").append("Best Time: ").append(((double) gameLeaderboard.getBestAnswerTime() / 1000)).append(" detik")
               .append("\n");
         }
       }
