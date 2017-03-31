@@ -61,6 +61,9 @@ public final class BotHelper {
   public static final String KEY_LEADERBOARD = "peringkat";
   public static final String KEY_HELP = "help";
 
+
+  public static final String IMG_HOLDER = "https://docs.google.com/uc?id=0B-F-b_ahxeRqSEJfd3VsSVNSYVk";
+
   public static UserProfileResponse getUserProfile(String aChannelAccessToken,
       String aUserId) throws IOException {
     LOG.info("getUserProfile...");
@@ -132,12 +135,12 @@ public final class BotHelper {
     for (GameLeaderboard leaderboard : aGameLeaderboards) {
       String title = createTitle(leaderboard.getUsername());
       String desc = createTagline(leaderboard);
-      String poster = aUserLineDb.getPictureUrl();
+      String poster = IMG_HOLDER;
 
       LOG.info("Result title {}\n desc {}\n poster {}\n", title, desc, poster);
 
       List<Action> buttons = Collections.singletonList(
-          new PostbackAction("Profile ", aUserLineDb.getPictureUrl()));
+          new URIAction("Profile ",IMG_HOLDER));
           carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
     }
 
