@@ -151,8 +151,8 @@ public class LineBotController {
       GameLeaderboard gameLeaderboardDb = fDao.getGameLeaderboardById(profile.getUserId());
       LOG.info("End setup database...");
 
-      if (gameStatusDb != null && gameStatusDb.getWordFalse() > 3) {
-        pushMessage(fChannelAccessToken, aUserId, "Game over...\nKamu salah menebak sebanyak " + gameStatusDb.getWordFalse() + " kali");
+      if (gameStatusDb != null && gameStatusDb.getWordFalse() == 3) {
+        pushMessage(fChannelAccessToken, aUserId, "Game over...\nKamu salah menebak sebanyak 3 kali");
         stickerMessage(fChannelAccessToken, aUserId, new StickerHelper.StickerMsg(JAMES_STICKER_USELESS));
         confirmStartGame(fChannelAccessToken, aUserId);
 
@@ -311,7 +311,7 @@ public class LineBotController {
           builder
               .append("\n").append("User: ").append(gameLeaderboard.getUsername())
               .append("\n").append("Best Score: ").append(gameLeaderboard.getBestScore()).append(" Kata")
-              .append("\n").append("Best Time: ").append((Math.round(gameLeaderboard.getBestAnswerTime() / 1000))).append(" detik")
+              .append("\n").append("Best Time: ").append((Math.floor(gameLeaderboard.getBestAnswerTime() * 100) / 100)).append(" detik")
               .append("\n");
         }
       }
