@@ -143,6 +143,7 @@ public class LineBotController {
     try {
       LOG.info("Start setup database...");
       UserProfileResponse profile = getUserProfile(fChannelAccessToken, aUserId);
+      LOG.info("End setup database..." + profile.getPictureUrl());
       UserLine userLineDb = fDao.getUserLineById(profile.getUserId());
       UserChat userChatDb = fDao.getUserChatById(profile.getUserId());
       GameStatus gameStatusDb = fDao.getGameStatusById(profile.getUserId());
@@ -290,7 +291,7 @@ public class LineBotController {
             StringBuilder builder = new StringBuilder("Peringkat...\n");
             List<GameLeaderboard> leaderboards = fDao.getAllGameLeaderboard();
             if (leaderboards.size() > 5) {
-              List<GameLeaderboard> topFive = leaderboards.subList(0, 4);
+              List<GameLeaderboard> topFive = leaderboards.subList(0, 5);
               carouselMessage(fChannelAccessToken, topFive, userLineDb, aUserId);
               List<GameLeaderboard> restLeaderboard = leaderboards.subList(5, leaderboards.size());
               for (GameLeaderboard gameLeaderboard : restLeaderboard) {

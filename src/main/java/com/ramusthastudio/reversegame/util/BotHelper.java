@@ -61,7 +61,6 @@ public final class BotHelper {
   public static final String KEY_LEADERBOARD = "peringkat";
   public static final String KEY_HELP = "help";
 
-
   public static final String IMG_HOLDER = "https://docs.google.com/uc?id=0B-F-b_ahxeRqSEJfd3VsSVNSYVk";
 
   public static UserProfileResponse getUserProfile(String aChannelAccessToken,
