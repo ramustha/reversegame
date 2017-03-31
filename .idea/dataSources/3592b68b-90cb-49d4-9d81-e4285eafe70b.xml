@@ -29,73 +29,193 @@
     <schema id="8" parent="2" name="information_schema">
       <ObjectId>13003</ObjectId>
     </schema>
-    <table id="9" parent="3" name="user_chat">
+    <table id="9" parent="3" name="game_leaderboard">
+      <ObjectId>17788144</ObjectId>
+      <StateNumber>4114510</StateNumber>
+    </table>
+    <table id="10" parent="3" name="game_status">
+      <ObjectId>17797531</ObjectId>
+      <StateNumber>4114511</StateNumber>
+    </table>
+    <table id="11" parent="3" name="game_word">
+      <ObjectId>17797374</ObjectId>
+      <StateNumber>4114513</StateNumber>
+    </table>
+    <table id="12" parent="3" name="user_chat">
       <ObjectId>17787981</ObjectId>
-      <StateNumber>4098928</StateNumber>
+      <StateNumber>4114515</StateNumber>
     </table>
-    <table id="10" parent="3" name="user_line">
+    <table id="13" parent="3" name="user_line">
       <ObjectId>17787989</ObjectId>
-      <StateNumber>4098934</StateNumber>
+      <StateNumber>4114516</StateNumber>
     </table>
-    <column id="11" parent="9" name="id">
+    <column id="14" parent="9" name="id">
+      <Position>1</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>4105950</StateNumber>
+    </column>
+    <column id="15" parent="9" name="username">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+      <StateNumber>4105950</StateNumber>
+    </column>
+    <column id="16" parent="9" name="best_score">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>4105950</StateNumber>
+    </column>
+    <column id="17" parent="9" name="best_answer_time">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>4105950</StateNumber>
+    </column>
+    <column id="18" parent="9" name="average_answer_time">
+      <Position>5</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>4105950</StateNumber>
+    </column>
+    <index id="19" parent="9" name="game_leaderboard_pkey">
+      <ObjectId>17788150</ObjectId>
+      <ColNames>id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <column id="20" parent="10" name="id">
+      <Position>1</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>4114477</StateNumber>
+    </column>
+    <column id="21" parent="10" name="status">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+      <StateNumber>4114477</StateNumber>
+    </column>
+    <column id="22" parent="10" name="word_true">
+      <Position>3</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>4114477</StateNumber>
+    </column>
+    <column id="23" parent="10" name="word_false">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>4114477</StateNumber>
+    </column>
+    <column id="24" parent="10" name="last_time">
+      <Position>5</Position>
+      <DataType>timestamp|0</DataType>
+      <StateNumber>4114477</StateNumber>
+    </column>
+    <column id="25" parent="10" name="is_answer">
+      <Position>6</Position>
+      <DataType>boolean|0</DataType>
+      <StateNumber>4114477</StateNumber>
+    </column>
+    <index id="26" parent="10" name="game_status_pkey">
+      <ObjectId>17797537</ObjectId>
+      <ColNames>id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <column id="27" parent="11" name="id">
+      <Position>1</Position>
+      <DataType>text|0</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>4113737</StateNumber>
+    </column>
+    <column id="28" parent="11" name="word_quest">
+      <Position>2</Position>
+      <DataType>text|0</DataType>
+      <StateNumber>4113737</StateNumber>
+    </column>
+    <column id="29" parent="11" name="word_answer">
+      <Position>3</Position>
+      <DataType>text|0</DataType>
+      <StateNumber>4113737</StateNumber>
+    </column>
+    <column id="30" parent="11" name="word_count">
+      <Position>4</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>4113737</StateNumber>
+    </column>
+    <column id="31" parent="11" name="game_level">
+      <Position>5</Position>
+      <DataType>integer|0</DataType>
+      <StateNumber>4113737</StateNumber>
+    </column>
+    <column id="32" parent="11" name="start_quest">
+      <Position>6</Position>
+      <DataType>timestamp|0</DataType>
+      <StateNumber>4113737</StateNumber>
+    </column>
+    <column id="33" parent="11" name="start_answer">
+      <Position>7</Position>
+      <DataType>timestamp|0</DataType>
+      <StateNumber>4113737</StateNumber>
+    </column>
+    <index id="34" parent="11" name="game_word_pkey">
+      <ObjectId>17797380</ObjectId>
+      <ColNames>id</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <column id="35" parent="12" name="id">
       <Position>1</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
       <StateNumber>4098928</StateNumber>
     </column>
-    <column id="12" parent="9" name="last_chat">
+    <column id="36" parent="12" name="last_chat">
       <Position>2</Position>
       <DataType>text|0</DataType>
       <StateNumber>4098928</StateNumber>
     </column>
-    <column id="13" parent="9" name="last_time">
+    <column id="37" parent="12" name="last_time">
       <Position>3</Position>
       <DataType>timestamp|0</DataType>
       <StateNumber>4098928</StateNumber>
     </column>
-    <column id="14" parent="9" name="false_count">
+    <column id="38" parent="12" name="false_count">
       <Position>4</Position>
       <DataType>integer|0</DataType>
       <StateNumber>4098928</StateNumber>
     </column>
-    <index id="15" parent="9" name="user_chat_pkey">
+    <index id="39" parent="12" name="user_chat_pkey">
       <ObjectId>17787987</ObjectId>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="16" parent="9" name="user_chat_pkey">
+    <key id="40" parent="12" name="user_chat_pkey">
       <ObjectId>17787988</ObjectId>
       <ColNames>id</ColNames>
       <UnderlyingIndexName>user_chat_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <column id="17" parent="10" name="id">
+    <column id="41" parent="13" name="id">
       <Position>1</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
       <StateNumber>4098934</StateNumber>
     </column>
-    <column id="18" parent="10" name="display_name">
+    <column id="42" parent="13" name="display_name">
       <Position>2</Position>
       <DataType>text|0</DataType>
       <StateNumber>4098934</StateNumber>
     </column>
-    <column id="19" parent="10" name="picture_url">
+    <column id="43" parent="13" name="picture_url">
       <Position>3</Position>
       <DataType>text|0</DataType>
       <StateNumber>4098934</StateNumber>
     </column>
-    <column id="20" parent="10" name="status_message">
+    <column id="44" parent="13" name="status_message">
       <Position>4</Position>
       <DataType>text|0</DataType>
       <StateNumber>4098934</StateNumber>
     </column>
-    <index id="21" parent="10" name="user_line_pkey">
+    <index id="45" parent="13" name="user_line_pkey">
       <ObjectId>17787995</ObjectId>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="22" parent="10" name="user_line_pkey">
+    <key id="46" parent="13" name="user_line_pkey">
       <ObjectId>17787996</ObjectId>
       <ColNames>id</ColNames>
       <UnderlyingIndexName>user_line_pkey</UnderlyingIndexName>

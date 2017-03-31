@@ -39,10 +39,10 @@ public class DaoImpl implements Dao {
   private final static String SQL_UPDATE_GAME_WORD = "UPDATE game_word SET word_quest=?, word_answer=?, word_count=?, game_level=?, start_quest=?, start_answer=? WHERE LOWER(id) LIKE LOWER(?);";
   private final static String SQL_DELETE_GAME_WORD = "DELETE FROM game_word WHERE LOWER(id) LIKE LOWER(?) ;";
 
-  private final static String SQL_SELECT_ALL_GAME_LEADERBOARD = "SELECT * FROM game_leaderboard";
-  private final static String SQL_GAME_LEADERBOARD_GET_BY_ID = SQL_SELECT_ALL_GAME_LEADERBOARD + " WHERE LOWER(id) LIKE LOWER(?) ;";
-  private final static String SQL_INSERT_GAME_LEADERBOARD = "INSERT INTO game_leaderboard (id, username, best_score, best_answer_time, average_answer_time) VALUES (?, ?, ?, ?, ?);";
-  private final static String SQL_UPDATE_GAME_LEADERBOARD = "UPDATE game_leaderboard SET username=?, best_score=?, best_answer_time=?, average_answer_time=? WHERE LOWER(id) LIKE LOWER(?);";
+  private final static String SQL_SELECT_ALL_GAME_LEADERBOARD = "SELECT * FROM game_leaderboard ORDER BY best_score DESC";
+  private final static String SQL_GAME_LEADERBOARD_GET_BY_ID = "SELECT * FROM game_leaderboard WHERE LOWER(id) LIKE LOWER(?) ;";
+  private final static String SQL_INSERT_GAME_LEADERBOARD = "INSERT INTO game_leaderboard (id, username, best_score, best_answer_time, average_answer_time, profile_url) VALUES (?, ?, ?, ?, ?, ?);";
+  private final static String SQL_UPDATE_GAME_LEADERBOARD = "UPDATE game_leaderboard SET username=?, best_score=?, best_answer_time=?, average_answer_time=?, profile_url=? WHERE LOWER(id) LIKE LOWER(?);";
 
   private final JdbcTemplate mJdbc;
 
@@ -90,6 +90,7 @@ public class DaoImpl implements Dao {
       new GameLeaderboard(
           aRs.getString("id"),
           aRs.getString("username"),
+          aRs.getString("profile_url"),
           aRs.getInt("best_score"),
           aRs.getInt("best_answer_time"),
           aRs.getInt("average_answer_time")
@@ -159,6 +160,7 @@ public class DaoImpl implements Dao {
       list.add(new GameLeaderboard(
           aRs.getString("id"),
           aRs.getString("username"),
+          aRs.getString("profile_url"),
           aRs.getInt("best_score"),
           aRs.getInt("best_answer_time"),
           aRs.getInt("average_answer_time")
@@ -212,7 +214,8 @@ public class DaoImpl implements Dao {
         aGameLeaderboard.getUsername(),
         aGameLeaderboard.getBestScore(),
         aGameLeaderboard.getBestAnswerTime(),
-        aGameLeaderboard.getAverageAnswerTime()
+        aGameLeaderboard.getAverageAnswerTime(),
+        aGameLeaderboard.getProfileUrl()
     );
   }
   @Override public void updateUserChat(UserChat aUser) {
@@ -252,6 +255,7 @@ public class DaoImpl implements Dao {
         aGameLeaderboard.getBestScore(),
         aGameLeaderboard.getBestAnswerTime(),
         aGameLeaderboard.getAverageAnswerTime(),
+        aGameLeaderboard.getProfileUrl(),
         aGameLeaderboard.getId()
     );
   }

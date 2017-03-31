@@ -4,16 +4,25 @@ import com.linecorp.bot.client.LineMessagingServiceBuilder;
 import com.linecorp.bot.model.Multicast;
 import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.ReplyMessage;
+import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.PostbackAction;
+import com.linecorp.bot.model.action.URIAction;
 import com.linecorp.bot.model.message.StickerMessage;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.template.CarouselColumn;
+import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.model.message.template.Template;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.model.response.BotApiResponse;
+import com.ramusthastudio.reversegame.model.GameLeaderboard;
+import com.ramusthastudio.reversegame.model.UserLine;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -51,6 +60,10 @@ public final class BotHelper {
   public static final String KEY_STOP_GAME = "stop";
   public static final String KEY_LEADERBOARD = "peringkat";
   public static final String KEY_HELP = "help";
+
+  public static final String IMG_GOLD = "https://docs.google.com/uc?id=0B-F-b_ahxeRqRUgyWUo4WmVjY1k";
+  public static final String IMG_SILVER = "https://docs.google.com/uc?id=0B-F-b_ahxeRqdXlVV1FPbEtUMlE";
+  public static final String IMG_BRONZE = "https://docs.google.com/uc?id=0B-F-b_ahxeRqWm15dUhmN0hibU0";
 
   public static UserProfileResponse getUserProfile(String aChannelAccessToken,
       String aUserId) throws IOException {
@@ -110,6 +123,37 @@ public final class BotHelper {
         .build().pushMessage(pushMessage).execute();
   }
 
+  public static Response<BotApiResponse> carouselMessage(String aChannelAccessToken,
+      List<GameLeaderboard> aGameLeaderboards, String aUserId) throws IOException {
+    List<CarouselColumn> carouselColumn = buildCarouselColumn(aGameLeaderboards);
+    CarouselTemplate template = new CarouselTemplate(carouselColumn);
+    return templateMessage(aChannelAccessToken, aUserId, template);
+  }
+
+  public static List<CarouselColumn> buildCarouselColumn(List<GameLeaderboard> aGameLeaderboards) {
+    int index = 0;
+    List<CarouselColumn> carouselColumn = new ArrayList<>();
+    for (GameLeaderboard leaderboard : aGameLeaderboards) {
+      String title = createTitle(leaderboard.getUsername());
+      String desc = createTagline(leaderboard);
+      String profile = leaderboard.getProfileUrl() == null ? IMG_GOLD : leaderboard.getProfileUrl();
+      String poster = IMG_GOLD;
+      if (index == 1) {
+        poster = IMG_SILVER;
+      } else if (index > 1) {
+        poster = IMG_BRONZE;
+      }
+      index++;
+      LOG.info("Result title {}\n desc {}\n poster {}\n", title, desc, poster);
+
+      List<Action> buttons = Collections.singletonList(
+          new URIAction("Profile ", profile));
+      carouselColumn.add(new CarouselColumn(poster, title, desc, buttons));
+    }
+
+    return carouselColumn;
+  }
+
   public static void greetingMessageGroup(String aChannelAccessToken, String aUserId) throws IOException {
     String greeting = "Hi manteman\n";
     greeting += "Makasih aku udah di invite disini!\n";
@@ -136,6 +180,14 @@ public final class BotHelper {
 
     String greeting = "Hi " + userProfile.getDisplayName() + "\n";
     greeting += "Aturannya simple kok, kamu tinggal jawab terbalik kata yang aku kasi ke kamu\n";
+    greeting += "Contoh kata '" + quest + "' kamu jawab '" + answer + "'";
+    pushMessage(aChannelAccessToken, aUserId, greeting);
+  }
+
+  public static void instructionMessageGroup(String aChannelAccessToken, String aUserId) throws IOException {
+    String answer = getRandomSmall();
+    String quest = new StringBuffer(answer).reverse().toString();
+    String greeting = "Aturannya simple kok, kamu tinggal jawab terbalik kata yang aku kasi ke kamu\n";
     greeting += "Contoh kata '" + quest + "' kamu jawab '" + answer + "'";
     pushMessage(aChannelAccessToken, aUserId, greeting);
   }
@@ -196,5 +248,31 @@ public final class BotHelper {
 
   public static String reverseString(String aString) {
     return String.valueOf(new StringBuffer(aString).reverse());
+  }
+
+  public static String createTitle(String aTitle) {
+    String filterTitle;
+    if (aTitle.length() > 30) {
+      filterTitle = aTitle.substring(0, 30) + "...";
+    } else {
+      filterTitle = aTitle;
+    }
+    return filterTitle;
+  }
+
+  public static String createTagline(GameLeaderboard aGameLeaderboard) {
+    int bestScore = aGameLeaderboard.getBestScore();
+    int bestAnswerTime = aGameLeaderboard.getBestAnswerTime();
+    int averageAnswerTime = aGameLeaderboard.getAverageAnswerTime();
+
+    String decs = "Best score : " + bestScore + " Kata" + "\n" +
+        "Best answer time : " + ((double) bestAnswerTime / 1000) + " detik";
+    String filterTitle;
+    if (decs.length() > 55) {
+      filterTitle = decs.substring(0, 55) + "...";
+    } else {
+      filterTitle = decs;
+    }
+    return filterTitle;
   }
 }
